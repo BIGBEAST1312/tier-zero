@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block nav_ask %}on{% endblock %}
+{% block title %}Ask — Tier Zero{% endblock %}
+
+{% block content %}
+<div class="hero" id="hero">
+  <h1>Ask before you ticket.</h1>
+  <p>Accounts, wireless, VPN, email, learning tools, printing, software and security —
+  answered only from the IT knowledge base, with the article linked. If there's no
+  article for it, this says so and points you to the service desk.</p>
+
+  <form id="askform" class="askwrap" autocomplete="off">
+    <input id="q" placeholder="e.g. how do I reset my NSID password?" aria-label="Your question" autofocus>
+    <button id="go" type="submit">Ask</button>
+  </form>
+
+  <div class="chips" id="chips">
+    {% for s in suggestions %}<button class="chip" type="button">{{ s.q }}</button>{% endfor %}
+  </div>
+</div>
+
+<div id="log" aria-live="polite"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const log = document.getElementById('log');
+const form = document.getElementById('askform');
+const hero = document.getElementById('hero');
+const q = document.getElementById('q');
+const go = document.getElementById('go');
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+document.getElementById('chips').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  q.value = e.target.textContent;
+  form.requestSubmit();
+});
+
+function citationsHtml(cites) {
+  if (!cites || !cites.length) return '';
+  const links = cites.map(c => c.url
+    ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.label)}</a>`
+    : `<a>${esc(c.label)}</a>`).join('');
+  return `<div class="cites"><b>SOURCES</b>${links}</div>`;
+}
+
+function wireReport(turn, data) {
+  const btn = turn.querySelector('.report-open');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (turn.querySelector('.report')) return;
+    const box = document.createElement('div');
+    box.className = 'report';
+    box.innerHTML = `<input placeholder="What looked wrong?" aria-label="What looked wrong">
+                     <button type="button">Send</button>`;
+    turn.appendChild(box);
+    box.querySelector('input').focus();
+    box.querySelector('button').addEventListener('click', async () => {
+      const reason = box.querySelector('input').value;
+      box.remove();
+      const note = document.createElement('div');
+      note.className = 'thanks'; note.textContent = 'Sending…';
+      turn.appendChild(note);
+      try {
+        const r = await fetch('/api/report', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({question: data.question, answer: data.text,
+                                reason, citations: data.citations})
+        });
+        const d = await r.json();
+        note.textContent = d.ok
+          ? 'Thanks — report #' + d.id + ' logged. A maintainer will review it.'
+          : 'Could not send that report.';
+      } catch (err) { note.textContent = 'Could not send that report.'; }
+    });
+  });
+}
+
+async function ask(question) {
+  hero.classList.add('tight');
+  const turn = document.createElement('div');
+  turn.className = 'turn';
+  turn.innerHTML = `<div class="q">${esc(question)}</div><div class="a">Looking…</div>`;
+  log.prepend(turn);
+  go.disabled = true; go.textContent = '…';
+
+  try {
+    const res = await fetch('/api/ask', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({question})
+    });
+    const data = await res.json();
+    turn.className = 'turn' + (data.refused ? ' refused' : '');
+    turn.innerHTML =
+      `<div class="q">${esc(question)}</div>` +
+      `<div class="a">${esc(data.text)}</div>` +
+      citationsHtml(data.citations) +
+      `<div class="meta"><span>match ${data.top_score} · ${esc(data.engine)}` +
+      (data.refused ? ' · declined' : '') + `</span>` +
+      (data.refused ? '' : `<button class="report-open" type="button">Report a problem</button>`) +
+      `</div>`;
+    wireReport(turn, data);
+    if (window.jgRecent) window.jgRecent.add(question);
+  } catch (err) {
+    turn.innerHTML = `<div class="q">${esc(question)}</div>` +
+                     `<div class="a">Something went wrong: ${esc(String(err))}</div>`;
+  }
+  go.disabled = false; go.textContent = 'Ask';
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const question = q.value.trim();
+  if (!question) return;
+  q.value = '';
+  ask(question);
+});
+
+// Arriving from a topic page or a recent-question link: ?q=…
+const preset = new URLSearchParams(location.search).get('q');
+if (preset) ask(preset);
+</script>
+{% endblock %}

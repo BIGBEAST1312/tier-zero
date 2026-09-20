@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block nav_maint %}on{% endblock %}
+{% block title %}Service owner — Tier Zero{% endblock %}
+
+{% block content %}
+{% if maintainer_locked and signed_in %}
+<form method="post" action="/maintainer/logout" style="float:right;margin-top:6px">
+  <button type="submit" style="background:none;border:1px solid var(--line);
+          border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--muted);
+          cursor:pointer">Sign out</button>
+</form>
+{% endif %}
+<h1 class="page">Service owner</h1>
+<p class="sub">Knowledge base coverage, and answers people reported as wrong. Thin
+topics are where tickets are most likely to arrive without an article to deflect them.
+No authentication on this page — a course project, not a production system.</p>
+
+<div class="stat">
+  <div><b>{{ n_pages }}</b><span>KB articles</span></div>
+  <div><b>{{ n_passages }}</b><span>passages</span></div>
+  <div><b>{{ open_reports }}</b><span>open reports</span></div>
+</div>
+
+<h2>Topic coverage</h2>
+<div class="card" style="padding:0;overflow:hidden">
+<table>
+  <tr><th>Topic</th><th>Pages</th><th>Passages</th><th>Words</th><th>Status</th></tr>
+  {% for row in coverage %}
+  <tr>
+    <td>{{ row.topic }}</td><td>{{ row.pages }}</td>
+    <td>{{ row.passages }}</td><td>{{ row.words }}</td>
+    <td>{% if row.thin %}<span class="pill thin">thin — add pages</span>
+        {% else %}<span class="pill ok">ok</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+<p class="sub">Thin topics are the gaps to fill next — every article added here is a
+question that can be answered without a ticket. Add one with
+<code>python scripts/add_page.py</code>.</p>
+
+<h2>Reported answers</h2>
+{% if reports %}
+  {% for r in reports %}
+  <div class="card">
+    <div style="font-size:11.5px;color:var(--muted)">#{{ r.id }} · {{ r.at }} · {{ r.status }}</div>
+    <div class="q" style="margin-top:6px">{{ r.question }}</div>
+    <div style="font-size:13.5px;color:var(--muted);margin:6px 0">{{ r.answer[:220] }}{% if r.answer|length > 220 %}…{% endif %}</div>
+    {% if r.reason %}<div style="font-size:13.5px"><b>Reported:</b> {{ r.reason }}</div>{% endif %}
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="card"><span style="color:var(--muted)">No reports yet.</span></div>
+{% endif %}
+
+<p class="sub"><a href="/maintainer/quality" style="color:var(--green-soft);text-decoration:none">Retrieval quality &rarr;</a></p>
+{% endblock %}

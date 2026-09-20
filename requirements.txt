@@ -1,0 +1,19 @@
+# Core app
+flask>=3.0
+
+# Production server (not needed to run locally)
+gunicorn>=21.2 ; sys_platform != 'win32'
+waitress>=3.0 ; sys_platform == 'win32'
+
+# Collecting source pages (scripts/scrape.py)
+requests>=2.28
+beautifulsoup4>=4.11
+
+# Evaluation
+numpy>=1.24
+
+# Optional: semantic retrieval. Downloads a ~90MB model on first use.
+# sentence-transformers>=2.2
+
+# Optional: fluent answers instead of extractive ones.
+# anthropic>=0.40

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block nav_browse %}on{% endblock %}
+{% block title %}{{ topic }} — Tier Zero{% endblock %}
+
+{% block content %}
+<h1 class="page">{{ topic }}</h1>
+<p class="sub"><a href="/browse">&larr; All topics</a></p>
+
+{% if suggestions %}
+<h2>Most asked</h2>
+<div class="chips" style="justify-content:flex-start">
+  {% for s in suggestions %}<a class="chip" href="/?q={{ s.q|urlencode }}">{{ s.q }}</a>{% endfor %}
+</div>
+{% endif %}
+
+<h2>Articles behind these answers</h2>
+{% for p in pages %}
+<div class="card">
+  <strong style="color:var(--green)">{{ p.title }}</strong>
+  <div style="font-size:13px;color:var(--muted);margin-top:5px">
+    {% for s in p.sections %}{{ s.heading }}{% if not loop.last %} · {% endif %}{% endfor %}
+  </div>
+  {% if p.url %}<div style="margin-top:9px"><a href="{{ p.url }}" target="_blank"
+     rel="noopener" style="font-size:13px">{{ p.url }}</a></div>{% endif %}
+</div>
+{% endfor %}
+{% endblock %}

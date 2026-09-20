@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block nav_maint %}on{% endblock %}
+{% block title %}Quality — Tier Zero{% endblock %}
+
+{% block content %}
+{% if maintainer_locked and signed_in %}
+<form method="post" action="/maintainer/logout" style="float:right;margin-top:6px">
+  <button type="submit" style="background:none;border:1px solid var(--line);
+          border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--muted);
+          cursor:pointer">Sign out</button>
+</form>
+{% endif %}
+<h1 class="page">Retrieval quality</h1>
+<p class="sub">Measured against a labelled question set where we already know which
+article holds the answer — including questions that should be escalated rather than
+answered. Regenerate with <code>python scripts/evaluate.py</code>.</p>
+
+{% if results %}
+<div class="stat">
+  <div><b>{{ (results.recall * 100)|round(1) }}%</b><span>recall@{{ results.k }}</span></div>
+  <div><b>{{ results.mrr|round(3) }}</b><span>MRR</span></div>
+  <div><b>{{ (results.abstention_accuracy * 100)|round(1) }}%</b><span>correct escalation calls</span></div>
+</div>
+
+<h2>Escalation threshold sweep</h2>
+<div class="card" style="padding:0;overflow:hidden">
+<table>
+  <tr><th>Cut-off</th><th>Answered correctly</th><th>Wrongly declined</th>
+      <th>Wrongly answered</th><th>Accuracy</th></tr>
+  {% for r in results.sweep %}
+  <tr {% if r.threshold == results.chosen_threshold %}style="background:var(--tint);font-weight:600"{% endif %}>
+    <td>{{ r.threshold }}</td><td>{{ r.answered_correctly }}</td>
+    <td>{{ r.wrongly_declined }}</td><td>{{ r.wrongly_answered }}</td>
+    <td>{{ (r.accuracy * 100)|round(1) }}%</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+<p class="sub">Chosen cut-off: <b>{{ results.chosen_threshold }}</b>. Too low and it
+answers things it shouldn't; too high and it sends solvable questions to the desk.</p>
+
+{% if results.misses %}
+<h2>Questions we still get wrong</h2>
+<div class="card" style="padding:0;overflow:hidden">
+<table>
+  <tr><th>Question</th><th>Wanted</th><th>Got</th></tr>
+  {% for m in results.misses %}
+  <tr><td>{{ m.question }}</td><td>{{ m.expected }}</td><td>{{ m.got|join(', ') }}</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+{% else %}
+<div class="card">
+  <span style="color:var(--muted)">No results yet. Run
+  <code>python scripts/evaluate.py</code> to generate them.</span>
+</div>
+{% endif %}
+{% endblock %}

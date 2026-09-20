@@ -1,0 +1,3 @@
+# devices
+# Public IT knowledge base article URLs, one per line.
+# Confirm each opens before scraping.

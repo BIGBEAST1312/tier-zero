@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tier Zero — answer it before it becomes a ticket</title>
+<meta name="description" content="A tier-zero IT support assistant for USask. Answers drawn only from the IT knowledge base, every article cited, and a clean escalation to the service desk when there is no article.">
+<style>
+:root{
+  --green:#123d2a; --green-soft:#1c5a3e; --mint:#2f9e6f;
+  --paper:#faf8f4; --canvas:#edebe5; --line:#ddd9cf;
+  --ink:#1d211f; --muted:#6b6f6a; --rust:#a4503f;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--canvas); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  line-height:1.6; overflow-x:hidden;
+}
+/* the scene sits behind everything and never scrolls */
+#scene{position:fixed; inset:0; z-index:0}
+/* Lifts the copy off the scene without dimming the whole page. */
+#veil{position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%, rgba(237,235,229,.84) 0%,
+             rgba(237,235,229,.5) 45%, rgba(237,235,229,.12) 78%)}
+main{position:relative; z-index:2}
+
+.bar{position:fixed; top:0; left:0; right:0; z-index:5; display:flex; align-items:center;
+  gap:13px; padding:15px 28px; backdrop-filter:blur(10px);
+  background:rgba(250,248,244,.88); border-bottom:1px solid var(--line)}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--green);
+  display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px}
+.bar b{font-family:Georgia,serif;font-size:19px;letter-spacing:-.2px;white-space:nowrap;color:var(--green)}
+.bar nav{margin-left:auto;display:flex;gap:3px;background:var(--canvas);
+  border:1px solid var(--line);border-radius:999px;padding:4px}
+.bar nav a{color:var(--muted);text-decoration:none;font-size:13px;padding:7px 15px;
+  border-radius:999px;transition:color .2s,background .2s}
+.bar nav a:hover{color:var(--green)}
+.bar nav a.cta{background:var(--green);color:#fff;font-weight:600}
+
+section{min-height:100svh; display:flex; align-items:center; padding:120px 28px}
+.col{max-width:680px; margin:0 auto; width:100%}
+.col.right{margin-right:8%; margin-left:auto}
+.col.left{margin-left:8%; margin-right:auto}
+
+.kick{font-size:11.5px;letter-spacing:2.4px;color:var(--mint);font-weight:700;
+  text-transform:uppercase;margin-bottom:18px}
+h1{font-family:Georgia,serif;font-size:clamp(42px,7.5vw,84px);line-height:1.02;
+  letter-spacing:-1.6px;margin:0 0 22px;font-weight:700;color:var(--ink)}
+h2{font-family:Georgia,serif;font-size:clamp(30px,4.6vw,50px);line-height:1.1;
+  letter-spacing:-.8px;margin:0 0 18px;font-weight:700;color:var(--ink)}
+p.lead{font-size:clamp(16px,1.9vw,19.5px);color:#41463f;max-width:34em;margin:0 0 30px}
+p.note{font-size:15px;color:var(--muted);max-width:34em}
+
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:14px 26px;border-radius:11px;text-decoration:none;
+  font-size:15px;font-weight:600;transition:transform .15s,background .2s}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-soft);transform:translateY(-2px)}
+.btn.ghost{border:1px solid var(--line);color:var(--ink);background:rgba(250,248,244,.85)}
+.btn.ghost:hover{border-color:var(--green);transform:translateY(-2px)}
+
+/* answer card that assembles on the retrieval section */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;max-width:520px;box-shadow:0 8px 26px rgba(29,33,31,.09)}
+.card .q{font-family:Georgia,serif;font-size:17px;color:var(--green);margin-bottom:10px}
+.card .a{font-size:15.5px;color:var(--ink);margin-bottom:14px}
+.card .src{border-top:1px solid var(--line);padding-top:11px;font-size:12.5px;color:var(--muted)}
+.card .src b{display:block;letter-spacing:1.4px;font-size:10px;margin-bottom:6px}
+.card .src span{display:block;color:var(--green-soft);padding:2px 0}
+.card.refuse{border-left:3px solid var(--rust)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.stats div{border:1px solid var(--line);border-radius:12px;padding:18px;
+  background:var(--paper);box-shadow:0 6px 18px rgba(29,33,31,.05)}
+.stats b{display:block;font-family:Georgia,serif;font-size:32px;color:var(--green)}
+.stats span{font-size:12px;color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:26px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+  background:var(--paper)}
+.tile strong{display:block;font-size:15px;color:var(--green);margin-bottom:3px}
+.tile span{font-size:13.5px;color:var(--muted)}
+
+footer{position:relative;z-index:2;border-top:1px solid var(--line);background:rgba(250,248,244,.75);padding:36px 28px 56px;
+  font-size:13px;color:var(--muted)}
+footer .col{display:flex;gap:20px;flex-wrap:wrap;align-items:baseline}
+
+.hint{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;
+  font-size:11.5px;letter-spacing:2px;color:var(--muted);transition:opacity .4s}
+.hint.gone{opacity:0}
+
+@media (min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:700px){
+  section{padding:96px 20px}
+  .col.left,.col.right{margin:0 auto}
+  .stats{grid-template-columns:1fr}
+  .bar{padding:12px 16px;gap:10px}
+  .bar b{font-size:16px}
+  /* On a phone the in-page links cost more room than they earn; the scroll
+     does the same job. Keep only the action. */
+  .bar nav a:not(.cta){display:none}
+  .bar nav a.cta{padding:9px 16px;font-size:13px}
+}
+
+/* Anyone who asks for less motion gets a static scene and no parallax. */
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<div id="veil"></div>
+
+<div class="bar">
+  <div class="logo">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M74 60 H56 A6 6 0 0 0 50 66 V134 A6 6 0 0 0 56 140 H74" fill="none"
+            stroke="#faf8f4" stroke-width="13" stroke-linecap="round"/>
+      <path d="M126 60 H144 A6 6 0 0 1 150 66 V134 A6 6 0 0 1 144 140 H126" fill="none"
+            stroke="#faf8f4" stroke-width="13" stroke-linecap="round"/>
+      <circle cx="100" cy="100" r="17" fill="#2f9e6f"/>
+    </svg>
+  </div>
+  <b>Tier Zero</b>
+  <nav>
+    <a href="#how">How it works</a>
+    <a href="#refuse">Escalation</a>
+    <a href="#team">Team</a>
+    <a href="/" class="cta">Try it</a>
+  </nav>
+</div>
+
+<main>
+
+<section id="hero">
+  <div class="col">
+    <div class="kick">University of Saskatchewan · IT support</div>
+    <h1>Answer it before it<br>becomes a ticket.</h1>
+    <p class="lead">Accounts, wireless, VPN, email, learning tools, printing, software
+    and security. Every answer comes from a real knowledge base article with the link
+    attached — and when there's no article for it, it escalates cleanly to the service
+    desk instead of guessing.</p>
+    <div class="row">
+      <a class="btn primary" href="/">Ask a question</a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="col left">
+    <div class="kick">The problem</div>
+    <h2>Most tickets are already answered.</h2>
+    <p class="lead">A large share of what arrives at the service desk already has a
+    knowledge base article covering it. People don't find the article — they search,
+    give up, and open a ticket. Every one of those is a question the desk answers
+    twice.</p>
+    <p class="note">Ask a general AI instead and it will answer confidently with settings
+    from some other university, because it has no USask articles in front of it and no
+    way to tell you that.</p>
+  </div>
+</section>
+
+<section id="how">
+  <div class="col right">
+    <div class="kick">How it works</div>
+    <h2>Retrieve first. Then answer.</h2>
+    <p class="lead">We index the IT knowledge base, split articles into passages, and
+    find the few that actually match the question. Only those go to the model, with an
+    instruction to use nothing else.</p>
+    <div class="card">
+      <div class="q">"My account keeps getting locked"</div>
+      <div class="a">Accounts lock after several failed sign-in attempts. The most common
+      cause is a device still holding an old password and retrying in the background.
+      Update the saved password on every device before signing in again.</div>
+      <div class="src"><b>SOURCES</b>
+        <span>Locked out of your account — Why accounts lock</span>
+        <span>Resetting your NSID password — Devices to update</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="refuse">
+  <div class="col left">
+    <div class="kick">The part nobody else builds</div>
+    <h2>It knows what to escalate.</h2>
+    <p class="lead">Search always returns something. Hand a model four irrelevant
+    passages and it will still try to help — and a wrong instruction about MFA or
+    account recovery locks someone out entirely.</p>
+    <div class="card refuse">
+      <div class="q">"Can you reset my password for me?"</div>
+      <div class="a">I can explain how to reset it yourself, but I can't make changes to
+      your account or verify your identity. For a reset you can't do yourself, open a
+      ticket with the service desk.</div>
+    </div>
+    <p class="note" style="margin-top:22px">Tier zero is the self-service layer. It
+    resolves what it can and hands off cleanly what it can't — escalation is the design,
+    not a failure. Where we draw that line is a measured decision, not a guess.</p>
+  </div>
+</section>
+
+<section id="measured">
+  <div class="col right">
+    <div class="kick">Measured, not claimed</div>
+    <h2>We test it against questions we know the answers to.</h2>
+    <p class="lead">A labelled question set — including requests that should be escalated
+    rather than answered, because escalation can't be measured without them.</p>
+    <div class="stats">
+      <div><b>94.4%</b><span>right article in the top 5 results</span></div>
+      <div><b>0.836</b><span>mean reciprocal rank</span></div>
+      <div><b>87.0%</b><span>correct calls on when to escalate</span></div>
+    </div>
+    <p class="note" style="margin-top:22px">Figures from the development corpus. They
+    move as real knowledge base articles replace it, and we report them either way.</p>
+  </div>
+</section>
+
+<section id="team">
+  <div class="col left">
+    <div class="kick">Team 8 — We'll Study It Later</div>
+    <h2>Five people, five slices.</h2>
+    <p class="lead">Each of us owns one part of the product end to end — the analysis,
+    the design, the build, the tests and the documentation.</p>
+    <div class="grid">
+      <div class="tile"><strong>Ask and Answer</strong><span>Mohit — retrieval and grounded generation</span></div>
+      <div class="tile"><strong>Trust and Escalation</strong><span>Haryan — citations, escalation, reporting</span></div>
+      <div class="tile"><strong>Knowledge Base</strong><span>Hetank — articles, refresh, coverage</span></div>
+      <div class="tile"><strong>Quality and Evaluation</strong><span>Priyesh — the labelled set and the metrics</span></div>
+      <div class="tile"><strong>Discover and Navigate</strong><span>Aarya — interface and integration</span></div>
+    </div>
+    <div class="row" style="margin-top:30px">
+      <a class="btn primary" href="/">Try it</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="col">
+    <span>Tier Zero — a student project by Team 8, We'll Study It Later.</span>
+    <span>Not an official service. It cannot change anything on your account.</span>
+  </div>
+</footer>
+
+<div class="hint" id="hint">SCROLL</div>
+
+<script type="module">
+// Resolve the vendored copy whether this page is opened directly from
+// site/ or served by Flask at /landing.
+const VENDOR = location.pathname.includes('/landing')
+  ? '/landing/vendor/three.module.min.js' : './vendor/three.module.min.js';
+const THREE = await import(VENDOR);
+
+const canvas = document.getElementById('scene');
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+
+const CREAM = 0xedebe5;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(CREAM);
+scene.fog = new THREE.Fog(CREAM, 14, 42);
+
+const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 0, 13);
+
+scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcfd6cc, 1.0));
+const key = new THREE.DirectionalLight(0xffffff, 1.5);
+key.position.set(5, 8, 9);
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xd9efe2, 0.7);
+fill.position.set(-7, -3, 5);
+scene.add(fill);
+
+/* ----------------------------------------------------------------------
+   Each card is one passage from the knowledge base. They drift scattered,
+   a few light up and converge when the question is asked, then everything
+   pulls away again for the refusal section. The motion is the product.
+---------------------------------------------------------------------- */
+const COUNT = 46;
+const CHOSEN = [3, 11, 19, 27];        // the passages that "match" the question
+const cards = [];
+const geo = new THREE.BoxGeometry(1.5, 1.95, 0.045);
+
+function rand(a, b) { return a + Math.random() * (b - a); }
+
+for (let i = 0; i < COUNT; i++) {
+  const picked = CHOSEN.includes(i);
+  const mat = new THREE.MeshStandardMaterial({
+    color: picked ? 0xffffff : 0xfaf8f4,
+    roughness: 0.78, metalness: 0.0,
+    emissive: new THREE.Color(0x123d2a), emissiveIntensity: 0,
+    transparent: true, opacity: 0.95,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+
+  // scattered shell around the camera's forward axis
+  const scatter = new THREE.Vector3(
+    rand(-13, 13),
+    rand(-8, 8),
+    rand(-16, 3)
+  );
+  // where it goes when the answer assembles
+  const ang = (CHOSEN.indexOf(i) / CHOSEN.length) * Math.PI * 2;
+  // Sit the matched passages left of centre and behind the plane of the copy,
+  // so they read as "these are the sources" without fighting the headline.
+  const focus = picked
+    ? new THREE.Vector3(-5.2 + Math.cos(ang) * 2.2, Math.sin(ang) * 2.0, -0.6)
+    : scatter.clone().multiplyScalar(1.85);
+
+  mesh.position.copy(scatter);
+  mesh.rotation.set(rand(-0.6, 0.6), rand(-0.9, 0.9), rand(-0.35, 0.35));
+
+  cards.push({
+    mesh, picked,
+    scatter, focus,
+    spread: scatter.clone().multiplyScalar(2.5),
+    spin: new THREE.Vector3(rand(-0.1, 0.1), rand(-0.14, 0.14), rand(-0.06, 0.06)),
+    phase: rand(0, Math.PI * 2),
+    baseColor: new THREE.Color(picked ? 0xffffff : 0xfaf8f4),
+    litColor: new THREE.Color(0x1c5a3e),
+  });
+  scene.add(mesh);
+}
+
+/* A faint constellation behind the cards: the rest of the corpus. */
+const dustGeo = new THREE.BufferGeometry();
+const dustN = 900, dustPos = new Float32Array(dustN * 3);
+for (let i = 0; i < dustN; i++) {
+  dustPos[i * 3]     = rand(-30, 30);
+  dustPos[i * 3 + 1] = rand(-20, 20);
+  dustPos[i * 3 + 2] = rand(-40, 6);
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+  color: 0x9ab5a6, size: 0.075, transparent: true, opacity: 0.55, sizeAttenuation: true,
+}));
+scene.add(dust);
+
+/* ---------------------------------------------------------------- scroll */
+let progress = 0, target = 0;
+const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+
+function readScroll() {
+  const max = document.body.scrollHeight - innerHeight;
+  target = max > 0 ? Math.min(scrollY / max, 1) : 0;
+  document.getElementById('hint').classList.toggle('gone', scrollY > 80);
+}
+addEventListener('scroll', readScroll, { passive: true });
+readScroll();
+
+if (!reduced) {
+  addEventListener('pointermove', e => {
+    pointer.tx = (e.clientX / innerWidth - 0.5) * 2;
+    pointer.ty = (e.clientY / innerHeight - 0.5) * 2;
+  }, { passive: true });
+}
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  readScroll();
+});
+
+const lerp = (a, b, t) => a + (b - a) * t;
+function ramp(p, a, b) { return Math.min(Math.max((p - a) / (b - a), 0), 1); }
+function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+const tmp = new THREE.Vector3();
+const clock = new THREE.Clock();
+
+function frame() {
+  const t = clock.getElapsedTime();
+  progress = lerp(progress, target, reduced ? 1 : 0.075);
+
+  // Five sections: hero, problem, how, refuse, measured, team.
+  // Six sections, so each occupies roughly a sixth of the scroll. Each ramp
+  // finishes just before its section reaches the middle of the viewport,
+  // otherwise the motion is still mid-transition when you stop to read.
+  const scatterOut = ease(ramp(progress, 0.04, 0.18));   // problem: fly apart
+  const converge   = ease(ramp(progress, 0.25, 0.37));   // how: the matches gather
+  const release    = ease(ramp(progress, 0.48, 0.60));   // refuse: pull back out
+  const settle     = ease(ramp(progress, 0.72, 0.92));   // team: calm drift
+
+  for (const c of cards) {
+    // base position moves scatter -> spread -> focus -> spread -> scatter
+    tmp.copy(c.scatter).lerp(c.spread, scatterOut);
+    if (c.picked) tmp.lerp(c.focus, converge);
+    tmp.lerp(c.spread, release * (c.picked ? 0.9 : 0.35));
+    tmp.lerp(c.scatter, settle * 0.5);
+
+    if (!reduced) {
+      tmp.y += Math.sin(t * 0.5 + c.phase) * 0.22;
+      tmp.x += Math.cos(t * 0.37 + c.phase) * 0.16;
+    }
+    c.mesh.position.lerp(tmp, 0.16);
+
+    if (!reduced) {
+      c.mesh.rotation.x += c.spin.x * 0.004;
+      c.mesh.rotation.y += c.spin.y * 0.004;
+    }
+    // matched passages face the camera as they converge
+    if (c.picked) {
+      c.mesh.rotation.x = lerp(c.mesh.rotation.x, 0, converge * 0.12);
+      c.mesh.rotation.y = lerp(c.mesh.rotation.y, 0, converge * 0.12);
+      // On cream a glow reads as washed out. Turning the matched passages green
+      // is what makes them legible as "selected".
+      const lit = converge * (1 - release);
+      c.mesh.material.color.copy(c.baseColor).lerp(c.litColor, lit);
+      c.mesh.material.emissiveIntensity = lit * 0.25;
+      c.mesh.material.opacity = 0.95;
+    } else {
+      c.mesh.material.opacity = 0.95 - scatterOut * 0.3 - converge * 0.25;
+    }
+  }
+
+  dust.rotation.y = t * 0.012;
+  dust.material.opacity = 0.55 - converge * 0.3;
+
+  if (!reduced) {
+    pointer.x = lerp(pointer.x, pointer.tx, 0.045);
+    pointer.y = lerp(pointer.y, pointer.ty, 0.045);
+  }
+  camera.position.x = lerp(camera.position.x, pointer.x * 1.3, 0.06);
+  camera.position.y = lerp(camera.position.y, -pointer.y * 0.9, 0.06);
+  camera.position.z = lerp(camera.position.z, 13 - converge * 3.4 + release * 2.2, 0.05);
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

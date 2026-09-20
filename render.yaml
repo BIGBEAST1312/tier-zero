@@ -1,0 +1,19 @@
+# Render.com blueprint. Push this with the repo and Render picks it up.
+services:
+  - type: web
+    name: jugaad-gpt
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      - key: TZ_RETRIEVER
+        value: bm25
+      - key: TZ_MAINTAINER_PASSWORD
+        generateValue: true
+      - key: TZ_SECRET_KEY
+        generateValue: true
+      - key: TZ_HTTPS
+        value: "1"

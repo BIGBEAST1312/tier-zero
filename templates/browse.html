@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block nav_browse %}on{% endblock %}
+{% block title %}Browse — Tier Zero{% endblock %}
+
+{% block content %}
+<h1 class="page">Browse by topic</h1>
+<p class="sub">If you're not sure how to describe the problem, start here.</p>
+
+<div class="grid2">
+  {% for topic, pages in topics.items() %}
+  <a class="tile" href="/topic/{{ topic }}">
+    <strong>{{ topic }}</strong>
+    <em>{{ pages|length }} page{{ '' if pages|length == 1 else 's' }}</em>
+  </a>
+  {% endfor %}
+</div>
+
+<h2>Most asked</h2>
+<div class="chips" style="justify-content:flex-start">
+  {% for s in suggestions %}<a class="chip" href="/?q={{ s.q|urlencode }}">{{ s.q }}</a>{% endfor %}
+</div>
+{% endblock %}

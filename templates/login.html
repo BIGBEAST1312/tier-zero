@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block nav_maint %}on{% endblock %}
+{% block title %}Sign in — Tier Zero{% endblock %}
+
+{% block content %}
+<h1 class="page">Service owner sign-in</h1>
+<p class="sub">Knowledge base coverage and reported answers are behind a password.
+Ask the team if you need it.</p>
+
+<div class="card" style="max-width:420px">
+  {% if error %}
+  <div style="background:#f6e6e1;color:#a4503f;border-radius:8px;
+              padding:10px 13px;font-size:13.5px;margin-bottom:14px">{{ error }}</div>
+  {% endif %}
+  <form method="post" action="/maintainer/login">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="password" style="display:block;font-size:13px;color:var(--muted);
+           margin-bottom:6px">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password"
+           autofocus required
+           style="width:100%;padding:12px 14px;font-size:15px;border:1px solid var(--line);
+                  border-radius:9px;background:#fff;margin-bottom:12px">
+    <button type="submit"
+            style="width:100%;padding:12px;font-size:15px;font-weight:600;border:0;
+                   border-radius:9px;background:var(--green);color:#fff;cursor:pointer">
+      Sign in
+    </button>
+  </form>
+</div>
+
+<p class="sub" style="margin-top:18px">One shared password, not user accounts —
+there is no per-person audit trail. A course project, not a production system.</p>
+{% endblock %}

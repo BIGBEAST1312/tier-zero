@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Tier Zero — USask IT support{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+</head>
+<body>
+
+{% if synthetic %}
+<div class="banner">
+  <b>SAMPLE DATA</b>
+  <span>Answers below come from placeholder knowledge base articles written for
+  development, not from the live USask IT knowledge base. Citations are illustrative.</span>
+</div>
+{% endif %}
+
+<div class="topbar">
+  <div class="mark">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M74 60 H56 A6 6 0 0 0 50 66 V134 A6 6 0 0 0 56 140 H74" fill="none"
+            stroke="#fff" stroke-width="13" stroke-linecap="round"/>
+      <path d="M126 60 H144 A6 6 0 0 1 150 66 V134 A6 6 0 0 1 144 140 H126" fill="none"
+            stroke="#fff" stroke-width="13" stroke-linecap="round"/>
+      <circle cx="100" cy="100" r="17" fill="#2f9e6f"/>
+    </svg>
+  </div>
+  <div class="wordmark">
+    <strong>Tier Zero</strong>
+    <span>University of Saskatchewan IT support</span>
+  </div>
+  <nav class="modes">
+    <a href="/" class="{% block nav_ask %}{% endblock %}">Ask</a>
+    <a href="/browse" class="{% block nav_browse %}{% endblock %}">Browse</a>
+    <a href="/maintainer" class="{% block nav_maint %}{% endblock %}">Maintainer</a>
+  </nav>
+</div>
+
+<div class="shell">
+  <aside class="side" id="side">
+    <a class="newq" href="/">New question</a>
+    <div class="body">
+      <h3>ARTICLES BY TOPIC</h3>
+      {% for row in sidebar_topics %}
+      <a class="row" href="/topic/{{ row.topic }}">
+        <span>{{ row.topic }}</span><em>{{ row.passages }}</em>
+      </a>
+      {% endfor %}
+      <h3 style="margin-top:18px">RECENT</h3>
+      <div class="recent" id="recent"><a style="opacity:.55">Nothing yet</a></div>
+    </div>
+    <button class="sidetoggle" id="sidetoggle" type="button">Topics and recent questions</button>
+    <div class="foot">
+      {{ n_pages }} articles · {{ n_passages }} passages indexed<br>
+      {{ retriever }} retrieval{% if synthetic %} · placeholder corpus{% endif %}
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="inner">
+      {% block content %}{% endblock %}
+      <div class="pagefoot">
+        Tier Zero — a student project by Team 8, We'll Study It Later. Not an
+        official University of Saskatchewan service. It cannot change anything on
+        your account. For account access, identity verification or anything urgent,
+        contact the service desk.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var t = document.getElementById('sidetoggle'), s = document.getElementById('side');
+  if (t) t.addEventListener('click', function () { s.classList.toggle('open'); });
+
+  // Recent questions, this browser only. No accounts, nothing stored server-side.
+  var KEY = 'jg_recent';
+  window.jgRecent = {
+    add: function (q) {
+      var list = [];
+      try { list = JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch (e) {}
+      list = [q].concat(list.filter(function (x) { return x !== q; })).slice(0, 5);
+      try { sessionStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+      this.render();
+    },
+    render: function () {
+      var el = document.getElementById('recent');
+      if (!el) return;
+      var list = [];
+      try { list = JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch (e) {}
+      if (!list.length) { el.innerHTML = '<a style="opacity:.55">Nothing yet</a>'; return; }
+      el.innerHTML = list.map(function (q) {
+        var d = document.createElement('div'); d.textContent = q;
+        return '<a href="/?q=' + encodeURIComponent(q) + '">' + d.innerHTML + '</a>';
+      }).join('');
+    }
+  };
+  window.jgRecent.render();
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
