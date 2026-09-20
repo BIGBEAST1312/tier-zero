@@ -22,7 +22,7 @@ hand off rather than guess.
 ```bash
 pip install -r requirements.txt
 python run.py                 # http://127.0.0.1:5000
-python tests/test_app.py      # 28 tests
+python tests/test_app.py      # 29 tests
 python scripts/evaluate.py    # metrics → /maintainer/quality
 ```
 
@@ -54,7 +54,7 @@ scripts/
   evaluate.py     recall@k, MRR, escalation threshold sweep
 tests/test_app.py
 data/
-  kb_articles.json    the team's knowledge-base articles — edit this one
+  kb_articles.json    the team's articles — edit this one (kept out of git, see below)
   sources.json        generated from it by scripts/import_kb.py — never hand-edit
   eval_questions.json 47 labelled questions, 10 of them out of scope
 ```
@@ -71,7 +71,12 @@ Stated plainly because a service owner will ask first:
 ## The knowledge base
 
 `data/kb_articles.json` holds the team's articles and is the file to edit. The
-site reads `data/sources.json`, which is generated from it:
+site reads `data/sources.json`, which is generated from it.
+
+`kb_articles.json` is in `.gitignore` on purpose: it includes staff-only IAM
+procedures that the import leaves out, and those shouldn't be in the repo. Keep it
+on your own machine, run the import there, and commit the generated
+`sources.json`:
 
 ```bash
 python scripts/import_kb.py      # rebuild sources.json after editing kb_articles.json
@@ -168,13 +173,15 @@ Get a key at aistudio.google.com, then:
 
 ```bash
 TZ_LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai \\
-TZ_LLM_MODEL=gemini-2.5-flash \\
+TZ_LLM_MODEL=gemini-3.6-flash \\
 TZ_LLM_API_KEY=your-key \\
   python run.py --answerer local
 ```
 
-Free tier is around 15 requests/minute and 1,500/day on Flash — above our own
-rate limit, so ours binds first. One thing to state in the deliverable: Google's
+gemini-2.5-flash was retired for new users in September 2026 — the API returns a
+404 naming its replacement. Free-tier limits change often; check the current ones
+in AI Studio. When the model is busy (a 503), Tier Zero retries once and then
+shows the article section instead, so a student always gets an answer. One thing to state in the deliverable: Google's
 free tier terms have historically allowed prompts to be used for product
 improvement. Our prompts contain public knowledge base text and the question
 asked, never account data, but a service owner will ask and the honest answer is

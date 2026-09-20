@@ -107,6 +107,7 @@ class Bot:
             return Answer(REFUSAL, [], refused=True, top_score=r.top_score,
                           engine=self.answerer.name, question=question)
         passages = self.focus(question, r.passages)
+        engine = self.answerer.name
         try:
             text = self.answerer.answer(question, passages)
         except Exception as e:
@@ -114,17 +115,24 @@ class Bot:
             # back to extraction, which cannot invent anything.
             #
             # The exception message is the whole diagnostic — it carries the
-            # provider's status code and response body. Printing only the class
-            # name leaves you with a bare "[RuntimeError]" and nothing to act on,
-            # so log the full text server-side and show it in the fallback notice.
+            # provider's status code and response body — so it goes to the
+            # server log in full (the Error log / server log on the host). The
+            # student sees a plain sentence: raw provider JSON on a public page
+            # looks broken and says nothing they can act on.
             detail = str(e).strip() or "no detail"
             print(f"[answerer:{self.answerer.name}] {type(e).__name__}: {detail}",
                   file=sys.stderr, flush=True)
-            text = (f"[{type(e).__name__}] {detail}\n\n"
-                    f"Falling back to extractive answering.\n\n"
+            text = ("The AI-written answer isn't available right now, so here is "
+                    "the matching section of the article.\n\n"
                     + ExtractiveAnswerer().answer(question, passages))
+            engine = "extractive (fallback)"
+        # An extractive answer shows one section, so it cites that section only.
+        # Listing every retrieved passage would put Wi-Fi articles under a
+        # password answer. The LLM answer draws on all of them and numbers them.
+        if engine.startswith("extractive"):
+            passages = passages[:1]
         return Answer(text, passages, refused=False, top_score=r.top_score,
-                      engine=self.answerer.name, question=question)
+                      engine=engine, question=question)
 
     # Sections that are side notes rather than the procedure itself.
     NOTE_SECTIONS = ("Good to know", "Depending on your situation")

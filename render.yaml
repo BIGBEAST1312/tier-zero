@@ -49,6 +49,6 @@ services:
       - key: TZ_LLM_BASE_URL
         value: https://generativelanguage.googleapis.com/v1beta/openai
       - key: TZ_LLM_MODEL
-        value: gemini-2.5-flash
+        value: gemini-3.6-flash
       - key: TZ_LLM_API_KEY
         sync: false

@@ -162,10 +162,11 @@ class OpenAICompatAnswerer:
       Google Gemini (official OpenAI-compatible endpoint; key from
       aistudio.google.com, not a Vertex AI service account)
         TZ_LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
-        TZ_LLM_MODEL=gemini-2.5-flash
+        TZ_LLM_MODEL=gemini-3.6-flash
 
-        Free tier is roughly 15 requests/minute and 1,500/day on Flash, which is
-        comfortably above our own rate limit. Note that Google's free tier terms
+        gemini-2.5-flash was retired for new users in September 2026; the API
+        said so and named gemini-3.6-flash. Free-tier limits change, so check
+        the current ones in AI Studio rather than trusting a number here. Note that Google's free tier terms
         have historically allowed prompts to be used for product improvement \u2014
         worth knowing for a product pitched at an IT department, and worth
         stating in the deliverable. Our prompts contain public KB text and the
@@ -202,22 +203,28 @@ class OpenAICompatAnswerer:
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
-        resp = requests.post(
-            f"{self.base_url}/chat/completions",
-            headers=headers,
-            timeout=self.timeout,
-            json={
-                "model": self.model,
-                "max_tokens": self.max_tokens,
-                "temperature": 0.2,
-                "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user",
-                     "content": f"Sources:\n\n{build_context(passages)}\n\n"
-                                f"Question: {question}"},
-                ],
-            },
-        )
+        payload = {
+            "model": self.model,
+            "max_tokens": self.max_tokens,
+            "temperature": 0.2,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user",
+                 "content": f"Sources:\n\n{build_context(passages)}\n\n"
+                            f"Question: {question}"},
+            ],
+        }
+        # Free tiers return 429 (rate limit) and 503 (overloaded) routinely, and
+        # both usually clear within seconds. One short retry recovers most of
+        # them; more would keep a student waiting on a page that already has a
+        # fallback answer ready.
+        import time
+        for attempt in range(2):
+            resp = requests.post(f"{self.base_url}/chat/completions",
+                                 headers=headers, timeout=self.timeout, json=payload)
+            if resp.status_code not in (429, 500, 502, 503, 504) or attempt == 1:
+                break
+            time.sleep(2)
         if resp.status_code != 200:
             raise RuntimeError(f"{self.model} returned {resp.status_code}: "
                                f"{resp.text[:200]}")

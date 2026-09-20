@@ -17,3 +17,7 @@ data/eval_results.json
 .DS_Store
 .idea/
 .vscode/
+
+# The team's full article file includes staff-only procedures that are never
+# published. Keep it on your own machine; commit the generated sources.json.
+data/kb_articles.json

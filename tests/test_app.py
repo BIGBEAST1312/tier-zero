@@ -139,6 +139,23 @@ def test_action_requests_are_escalated_not_answered():
                       "to assert the new behaviour")
 
 
+def test_llm_failure_falls_back_cleanly():
+    """When the AI provider fails (a 503 from an overloaded free tier is routine),
+    the student still gets the article section, in plain words, citing only
+    that section — never raw provider JSON, never unrelated sources."""
+    class Broken:
+        name = "openai-compat"
+        def answer(self, question, passages):
+            raise RuntimeError('model returned 503: {"error": {"status": "UNAVAILABLE"}}')
+    bot = Bot.from_path(SOURCES, answerer=Broken())
+    a = bot.ask("I forgot my NSID password")
+    assert not a.refused
+    assert "503" not in a.text and "UNAVAILABLE" not in a.text, "raw error shown to user"
+    assert "isn't available right now" in a.text
+    assert a.engine == "extractive (fallback)"
+    assert [c["page_id"] for c in a.citations()] == ["kb-20"]
+
+
 # ------------------------------------------------------------- Epic 2: reports
 def test_feedback_round_trip(tmp_path=None):
     import tempfile
