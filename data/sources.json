@@ -1,264 +1,661 @@
 [
   {
-    "page_id": "password-reset",
-    "title": "Resetting your NSID password",
+    "page_id": "kb-20",
+    "title": "Password: Recover NSID and Reset Password",
     "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/20/NSID-Recover-NSID-and-Reset-Your-Password",
     "topic": "Accounts",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "Resetting a password you still know",
-        "text": "You can change your NSID password at any time from the self-service password page. Sign in with your current password, then choose a new one. Changes take effect immediately, but devices that have the old password saved will keep prompting until you update them.\n\nAfter changing your password you will need to update it anywhere it is stored: the wireless network on your phone and laptop, any mail app configured manually, and any mapped network drives."
+        "heading": "Steps",
+        "text": "1. Go to the NSID password recovery page and click \"I forgot my password\".\n2. Enter your NSID and click \"Continue\".\n3. Choose email, SMS, or security questions to verify your identity.\n4. Enter the verification code or answers and submit them.\n5. Enter and confirm a new password that meets the password requirements, then click \"Reset Password\".\n6. Wait at least 15 minutes for the new password to synchronize with USask services.\n7. Update the saved password on applicable VPN, Wi-Fi, Apple device, mail, and password-manager accounts."
       },
       {
-        "heading": "Resetting a password you have forgotten",
-        "text": "If you cannot sign in, use the forgotten password option on the sign-in page. You will be asked to verify your identity using the recovery method registered on your account, which is usually a personal email address or a phone number.\n\nIf no recovery method is registered, or you no longer have access to it, self-service reset will not work. In that case contact the service desk, who will verify your identity before resetting the account."
-      },
-      {
-        "heading": "Password requirements",
-        "text": "Passwords must meet a minimum length and complexity requirement, and cannot reuse a recent previous password. Passphrases of several words are easier to remember and generally stronger than short complex strings.\n\nPasswords expire on a set schedule. You will receive reminder notices by email before expiry. If a password expires while you are away, the forgotten password process still applies."
+        "heading": "Good to know",
+        "text": "After a password change you must update saved wireless networks, VPN, phone mail apps and any password manager.\n\nSynchronisation can take several minutes; a failure immediately afterwards is usually a saved old password."
       }
     ]
   },
   {
-    "page_id": "account-lockout",
-    "title": "Locked out of your account",
-    "url": "https://example.invalid/kb/account-lockout",
-    "url_note": "NO ARTICLE FOUND: no public USask KB article covers account lockout (checked 2026-09-16). Placeholder URL kept until one is found.",
-    "topic": "Accounts",
+    "page_id": "kb-433",
+    "title": "Wireless: Connect to uofs-secure Network",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/433/Wireless-Connect-to-uofs-secure-Network",
+    "topic": "Network",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [
+      "uofs-secure",
+      "wifi",
+      "wi-fi",
+      "wireless",
+      "network",
+      "connect",
+      "iseberg",
+      "remarkable"
+    ],
     "sections": [
       {
-        "heading": "Why accounts lock",
-        "text": "Accounts lock automatically after several failed sign-in attempts. The most common cause is not a forgotten password but a device still holding an old one and retrying in the background, which locks the account repeatedly even after a successful reset elsewhere.\n\nIf your account locks again within minutes of being unlocked, a saved password on one of your devices is almost always the cause."
+        "heading": "Steps",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Select uofs-secure from the available Wi-Fi networks.\n3. Enter your NSID in the format the device requires and your PAWS password.\n4. Accept the server certificate for iseberg.usask.ca.\n5. Check that the connection works and verify internet access."
       },
       {
-        "heading": "Clearing a lockout",
-        "text": "A lockout clears automatically after a set period. You do not need to contact anyone unless it recurs.\n\nBefore signing in again, update the saved password on every device: wireless network settings, mail applications, and any service where you chose to stay signed in. Signing out of all sessions and back in resolves most repeat lockouts."
+        "heading": "On Windows",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Select the Wi-Fi icon from the bottom right task bar.\n3. Select uofs-secure and click Connect.\n4. Enter your NSID as the username and your PAWS password, then select OK.\n5. Check that the connection works and verify internet access."
+      },
+      {
+        "heading": "On macOS",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Select the Wi-Fi icon from the top right menu and select uofs-secure.\n3. Enter your NSID as the username and your PAWS password, then select Join.\n4. Select Show Certificate, check Always trust iseberg.usask.ca and select Continue.\n5. Enter your Mac administrator username and password at the Certificate Trust Settings prompt, then select Update Settings.\n6. Check that the connection works and verify internet access."
+      },
+      {
+        "heading": "On iPhone or iPad",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Open Settings, select Wi-Fi and select uofs-secure.\n3. Enter your NSID as the username and your PAWS password, then select Join.\n4. Verify the server is named iseberg.usask.ca and select Trust.\n5. Check that a checkmark appears beside uofs-secure and verify internet access."
+      },
+      {
+        "heading": "On Android",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Open Settings, select Network & Internet (or Connections), select Wi-Fi and select uofs-secure.\n3. Enter the following settings:\n   — EAP method: PEAP\n   — Phase 2 authentication: MSCHAPV2\n   — CA certificate: Use System Certificates\n   — Online certificate status: Request status\n   — Identity: your NSID\n   — Password: your PAWS password\n   — Domain: usask.ca\n4. Select Connect.\n5. Check that the connection works and verify internet access."
+      },
+      {
+        "heading": "On ChromeOS",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Open Settings, select Network > Wi-Fi and select uofs-secure.\n3. Enter the following settings:\n   — EAP Method: PEAP\n   — EAP Phase 2 authentication: MSCHAPv2\n   — Server CA certificate: Default\n   — Subject match: iseberg.usask.ca\n   — Domain suffix match: usask.ca\n   — Identity: your NSID in the format abc123@usask.ca\n   — Password: your PAWS password\n4. Select Connect.\n5. Check that the connection works and verify internet access."
+      },
+      {
+        "heading": "On Linux",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Open Settings, select Network, select Wireless and select uofs-secure.\n3. Enter the following settings in the authentication window:\n   — Wi-Fi Security: WPA & WPA2 Enterprise\n   — Authentication: Protected EAP (PEAP)\n   — CA Certificate: DigiCert Global Root G2\n   — PEAP Version: Automatic\n   — Inner authentication: MSCHAPv2\n   — Username: your NSID in the format abc123@usask.ca\n   — Password: your PAWS password\n4. Select Connect.\n5. Check that the connection works and verify internet access."
+      },
+      {
+        "heading": "On reMarkable",
+        "text": "1. Confirm your NSID is active and PAWS password is current.\n   — If you recently reset your password, remove the saved uofs-secure network and join it again.\n   — If the CA certificate can't be set to Use System Certificates, install the DigiCert certificate first.\n2. Open the hamburger menu, select Settings, select Wi-Fi and select uofs-secure.\n3. Enter the following settings:\n   — EAP Method: PEAP\n   — Phase 2 authentication: MSCHAPv2\n   — Identity: your NSID\n   — Password: your PAWS password\n4. Select Connect.\n5. Check that the connection works."
+      },
+      {
+        "heading": "Good to know",
+        "text": "Username format: NSID only on Windows, macOS, iOS, Android and reMarkable; full NSID@usask.ca on ChromeOS and Linux."
       }
     ]
   },
   {
-    "page_id": "mfa-setup",
-    "title": "Setting up multi-factor authentication",
-    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/119/Multi-Factor-Authentication-Create-a-USask-MFA-Account",
-    "related_urls": [
-      "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/3944/Multi-factor-Authentication-MFA-setup",
-      "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/230/Multi-Factor-Authentication-MFA-Add-or-Modify-Options",
-      "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/589/Multi-Factor-Authentication-Troubleshoot-MFA-Setup"
-    ],
+    "page_id": "kb-230",
+    "title": "Multi Factor Authentication: Set Up and Troubleshoot",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/589/Multi-Factor-Authentication-Troubleshoot-MFA-Setup",
     "topic": "Security",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "Registering your first method",
-        "text": "Multi-factor authentication requires a second confirmation when you sign in. The recommended method is an authenticator app on your phone, which generates a code or sends a push notification. A phone number for text or voice can be registered as a backup.\n\nRegister at least two methods. Accounts with only one registered method are the most common reason people lose access when they change phones."
+        "heading": "Steps",
+        "text": "1. Sign in to the Authenticator app and link it with PAWS.\n2. Check everything on myprofile.usask.ca."
       },
       {
-        "heading": "Getting a new phone",
-        "text": "Register your new device before disposing of the old one. Sign in using the existing method, then add the new device as an additional method and remove the old one.\n\nIf you have already lost access to every registered method, self-service will not work and the service desk must verify your identity before resetting your MFA registration."
-      },
-      {
-        "heading": "When prompts do not arrive",
-        "text": "Push notifications require the phone to have an internet connection. If prompts do not appear, open the authenticator app directly and use the code it displays rather than waiting for a notification.\n\nCodes are time-based, so a phone whose clock has drifted will generate codes that are rejected. Enabling automatic date and time on the device resolves this."
+        "heading": "Good to know",
+        "text": "A prompt asking to check a registered device is waiting for an approval tap, not a typed code.\n\nWhen number matching is on, the number shown on screen is typed into the app.\n\nPart of this is done by the service desk. If the steps above don't resolve it, open a ticket with the service desk."
       }
     ]
   },
   {
-    "page_id": "wifi-eduroam",
-    "title": "Connecting to campus wireless",
-    "url": "https://servicecatalogue.usask.ca/it/wireless-and-wired-network-services.php",
-    "topic": "Network",
+    "page_id": "kb-181",
+    "title": "Microsoft 365: Install on a Personal Device",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/181/Microsoft-Office-365-Install-on-a-Personal-Device",
+    "topic": "Microsoft 365",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "Signing in to eduroam",
-        "text": "Select the eduroam network and sign in with your full username including the institution suffix, not your username alone. This is the single most common cause of a connection being rejected.\n\nThe first connection on each device may ask you to accept a certificate. Accept it only if the certificate details match those published in this article."
+        "heading": "Steps",
+        "text": "1. Sign in to office.com with your USask ID.\n2. Select Install apps and download the Microsoft 365 installer.\n3. Run the installer and wait for the installation to finish.\n4. Open an Office app and sign in with your USask ID to activate it."
       },
       {
-        "heading": "Using eduroam elsewhere",
-        "text": "Eduroam works at participating institutions worldwide using the same credentials. You do not need to register anything before travelling.\n\nIf it fails at another institution but works on campus, the usual cause is a saved profile from a previous visit. Removing the network and adding it again resolves most cases."
-      },
-      {
-        "heading": "When the connection keeps dropping",
-        "text": "Repeated disconnections shortly after a password change mean the device is still presenting the old credentials. Remove the saved network entirely and reconnect with the new password.\n\nOlder devices that support only outdated wireless standards may connect intermittently in busy areas. The guest network is a fallback for these, although it does not provide access to internal services."
+        "heading": "Good to know",
+        "text": "If the browser version works but the desktop apps fail, the cause is usually device registration rather than your licence."
       }
     ]
   },
   {
-    "page_id": "vpn-access",
-    "title": "Remote access and VPN",
-    "url": "https://servicecatalogue.usask.ca/it/wireless-and-wired-network-services.php",
-    "topic": "Network",
-    "fetched": "",
-    "synthetic": true,
-    "sections": [
-      {
-        "heading": "When you need the VPN",
-        "text": "Most services, including email and the learning management system, work from anywhere without a VPN. The VPN is required only for resources restricted to the campus network, such as some library databases, internal administrative systems and certain research file shares.\n\nIf a service works on campus but not at home, that is the signal you need the VPN."
-      },
-      {
-        "heading": "Installing and connecting",
-        "text": "Download the client from the software page and sign in with your usual credentials. Multi-factor authentication applies to VPN sign-in as well.\n\nConnect only while you need the restricted resource. Leaving the VPN connected routes unnecessary traffic through the campus network and can slow other activity."
-      }
-    ]
-  },
-  {
-    "page_id": "email-setup",
-    "title": "Email setup and common problems",
-    "url": "https://servicecatalogue.usask.ca/it/email-and-calendar.php",
-    "topic": "Email",
-    "fetched": "",
-    "synthetic": true,
-    "sections": [
-      {
-        "heading": "Setting up email on a phone",
-        "text": "Add the account using the built-in mail application and choose the organisational account option rather than manual server setup. Automatic configuration retrieves the correct settings and applies any required security policies.\n\nManual setup with server names is not supported and will usually fail authentication once multi-factor authentication is enforced."
-      },
-      {
-        "heading": "Mail that will not send or receive",
-        "text": "A mailbox that has reached its storage limit will continue receiving but stop sending. Check your mailbox size before troubleshooting anything else. Emptying deleted items and the junk folder recovers space immediately.\n\nIf messages sit in the outbox on one device but send correctly from the web, the saved password on that device is likely out of date."
-      },
-      {
-        "heading": "Missing messages",
-        "text": "Check the junk folder and any rules you have created before reporting a message as missing. Rules created years ago are a frequent cause of mail appearing to vanish.\n\nMessages deleted from deleted items can be recovered for a limited period using the recover deleted items option in the web client."
-      }
-    ]
-  },
-  {
-    "page_id": "lms-access",
-    "title": "Learning management system access",
-    "url": "https://students.usask.ca/study/canvas.php",
-    "topic": "Learning tools",
-    "fetched": "",
-    "synthetic": true,
-    "sections": [
-      {
-        "heading": "A course is missing from your list",
-        "text": "Courses appear only after the instructor publishes them, which often happens on or shortly before the first day of class. A registered course that does not appear is usually unpublished rather than misassigned.\n\nIf the course is published and other students can see it but you cannot, the issue is with your registration rather than with the system, and the registration office handles that."
-      },
-      {
-        "heading": "Uploads and submissions failing",
-        "text": "Uploads fail most often because of file size limits or an unsupported file type. Check the size limit stated on the assignment before troubleshooting the connection.\n\nSubmitting from a phone on a weak connection is the second most common cause. Where possible, submit from a computer on a stable connection, and confirm the submission receipt before closing the page."
-      },
-      {
-        "heading": "Content that will not display",
-        "text": "Embedded video and interactive content can be blocked by browser privacy settings or extensions. Trying the same page in a private window with extensions disabled identifies this quickly.\n\nClearing the browser cache resolves most display problems that persist after an instructor updates content."
-      }
-    ]
-  },
-  {
-    "page_id": "printing",
-    "title": "Printing on campus",
-    "url": "https://servicecatalogue.usask.ca/it/student-printing-and-photocopying-cpas.php",
-    "related_urls": [
-      "https://library.usask.ca/spaces-hours/computers-printing.php"
-    ],
+    "page_id": "kb-3420",
+    "title": "Printing: Denied or Delayed Print Jobs",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/3420/CPAS-Denied-or-Delayed-Printing-Explained",
     "topic": "Printing",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "Sending a job to a campus printer",
-        "text": "Print jobs are sent to a shared queue and released at any campus printer by signing in at the device. Jobs waiting in the queue are deleted automatically after a set period, so release them the same day.\n\nPrinting from a personal laptop requires the print client to be installed, or you can upload the file through the web print page instead."
+        "heading": "Steps",
+        "text": "1. Check the available print credit on the account.\n2. Check the job in the print queue for a denial reason."
       },
       {
-        "heading": "Print credit",
-        "text": "Printing is charged against a print balance linked to your account. The balance can be topped up online and is shown when you sign in at a device.\n\nA job that disappears without printing usually means the balance was too low to cover it. The job is not held; it must be sent again after topping up."
-      },
-      {
-        "heading": "Quality and jams",
-        "text": "Report a jam or a fault using the number posted on the device rather than attempting to clear it yourself.\n\nPages printing faint or streaked indicate a toner problem, which is also reported rather than fixed locally."
+        "heading": "Good to know",
+        "text": "A denied job is most often an insufficient balance rather than a printer fault."
       }
     ]
   },
   {
-    "page_id": "software-downloads",
-    "title": "Software available to students",
-    "url": "https://servicecatalogue.usask.ca/it/software-licenses-for-students.php",
+    "page_id": "kb-3421",
+    "title": "Software: Install from the Managed Software Catalogue",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/3421/Software-Install-from-the-Managed-Software-Catalogue",
     "topic": "Software",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "What is available",
-        "text": "Students have access to the standard office suite, several statistical and mathematical packages, and reference management software at no additional cost while enrolled. Availability differs by program, and some titles are licensed only for teaching use.\n\nInstall these from the software portal rather than from a vendor site, so the correct licence is applied automatically."
+        "heading": "Steps",
+        "text": "1. Open the software catalogue on the managed device.\n2. Locate the application and choose install.\n3. Wait for the installation to complete and open the application."
       },
       {
-        "heading": "Licences after you leave",
-        "text": "Licences tied to enrolment stop working after you graduate or withdraw. Files created with the software remain yours, but the applications will require a personal licence to continue using.\n\nExport anything stored only inside a licensed application before your access ends."
-      },
-      {
-        "heading": "Activation failures",
-        "text": "A title that installs but will not activate is usually signed in with a personal account rather than the institutional one. Sign out completely and sign back in with your full institutional username.\n\nSome licences allow a limited number of simultaneous installations. Deactivating an old device frees a slot."
+        "heading": "Good to know",
+        "text": "The catalogue is only available on university managed Windows devices.\n\nOff campus the device must be on the VPN for the catalogue to populate."
       }
     ]
   },
   {
-    "page_id": "device-setup",
-    "title": "Setting up a new device",
-    "url": "https://students.usask.ca/study/tech-tips.php",
+    "page_id": "kb-172",
+    "title": "O365 Email: Set up USask email in Outlook on Windows",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/172/O365-Email-Set-up-USask-email-in-Outlook-on-Windows",
+    "topic": "Email",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "outlook",
+      "windows",
+      "email",
+      "mail",
+      "inbox",
+      "not syncing",
+      "send",
+      "receive",
+      "mailbox"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Open Outlook and enter your USask email address.\n2. Sign in with your USask credentials on the Microsoft sign-in page.\n3. Approve the MFA prompt on your phone.\n4. Finish the account setup and confirm the mailbox loaded."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-218",
+    "title": "Apple Mail: Setup on iPhone or iPad",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/218/Apple-Mail-Setup-on-iPhone-or-iPad",
+    "topic": "Email",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "iphone",
+      "ipad",
+      "apple mail",
+      "ios",
+      "email",
+      "mail",
+      "not syncing"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Open Settings > Mail > Accounts > Add Account and choose Microsoft Exchange.\n2. Enter your USask email address and select Sign In.\n3. Sign in with your USask credentials and approve the MFA prompt.\n4. Accept the permissions and choose Mail, Contacts and Calendars to sync.\n5. Save the account and confirm the mailbox loaded in the Mail app."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-146",
+    "title": "O365 Email: Android Phone - Set up the Gmail App",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/146/O365-Email-Android-Phone-Setup-the-Gmail-App",
+    "topic": "Email",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "android",
+      "gmail",
+      "gmail app",
+      "email",
+      "mail",
+      "not syncing"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Open the Gmail app and select Add another account.\n2. Choose Exchange and Office 365 and enter your USask email address.\n3. Sign in with your USask credentials and approve the MFA prompt.\n4. Accept the permissions and finish the account setup.\n5. Confirm the mailbox loaded in the Gmail app."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-116",
+    "title": "Access and Use the USask Remote Computer Lab",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/116/Access-and-Use-the-USask-Remote-Computer-Lab",
+    "topic": "Software",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "remote lab",
+      "remote computer lab",
+      "virtual lab"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Open PAWS and log in.\n2. Search for Remote Lab and click Software and Computer Labs.\n3. Click Remote Computer Lab.\n4. Click Common Desktop.\n5. Click Connect in Session Settings.\n6. Log in with your NSID and PAWS password."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-185",
+    "title": "Virtual Private Network (VPN)",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/185/Virtual-Private-Network-VPN",
+    "topic": "Network",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "vpn",
+      "vpn.usask.ca",
+      "off campus",
+      "remote access"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Confirm your NSID is active and password is current.\n2. Use the VPN only when you are off campus, not while connected to the campus network.\n3. Install and configure the USask VPN client software for your device.\n4. Connect to the USask VPN service at vpn.usask.ca using your NSID and password.\n5. Confirm the VPN connected successfully and you can access USask resources."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-204",
+    "title": "Zoom at USask - Activate Your Account",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/204/Zoom-at-USask-Activate-Your-Account",
+    "topic": "Software",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "zoom",
+      "opt in",
+      "activate",
+      "sso",
+      "something went wrong",
+      "usask-ca.zoom.us",
+      "meeting"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. USask members need to opt in to Zoom before first use.\n2. Sign in to My Profile.\n3. Go to the Opt In Services section and click Edit.\n4. Enable Zoom and click Save Changes.\n5. Wait about 30 minutes after opting in before using Zoom. Signing in sooner may show the error \"something went wrong while you tried signing in with SSO\".\n6. Sign in at https://usask-ca.zoom.us or through the Web Conferencing channel in PAWS, not at zoom.us, which returns an error with USask credentials."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-893",
+    "title": "SharePoint Online at USask",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/893/SharePoint-Online-at-USask",
+    "topic": "Microsoft 365",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "sharepoint",
+      "site",
+      "permissions",
+      "workflow",
+      "nintex",
+      "email-enabled list",
+      "customize site"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Check whether what you need is part of USask's SharePoint Online service.\n2. Some features belonged to USask's former on-premise SharePoint server and are not part of SharePoint Online.\n3. For learning SharePoint itself, see Microsoft's SharePoint introduction."
+      },
+      {
+        "heading": "Depending on your situation",
+        "text": "Custom permissions are not supported; each site has only two groups, Owners and Members.\n\nICT does not build or maintain custom workflows or forms.\n\nICT does not help format or customize sites.\n\nEmail-enabled lists and libraries are not available in SharePoint Online.\n\nNintex Forms and Nintex Workflows are not available in SharePoint Online."
+      }
+    ]
+  },
+  {
+    "page_id": "microsoft-teams-at-usask",
+    "title": "Microsoft Teams at USask",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Category/109/Microsoft-Teams",
+    "topic": "Microsoft 365",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "teams",
+      "microsoft teams",
+      "meeting",
+      "chat",
+      "software center",
+      "self service"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Check that you are eligible for a USask Teams account.\n2. Install Microsoft Teams on your personal device from the Microsoft Teams website.\n3. Open Microsoft Teams on your device.\n4. Sign in with your Office 365 username in the format nsid@usask.ca and your password.\n5. Confirm you are signed in and can access Teams."
+      },
+      {
+        "heading": "On Windows",
+        "text": "1. Check that you are eligible for a USask Teams account.\n2. Install Microsoft Teams on your work device via Software Center for Windows.\n3. Open Microsoft Teams on your device.\n4. Sign in with your Office 365 username in the format nsid@usask.ca and your password.\n5. Confirm you are signed in and can access Teams."
+      },
+      {
+        "heading": "On macOS",
+        "text": "1. Check that you are eligible for a USask Teams account.\n2. Install Microsoft Teams on your work device via Self Service for Mac.\n3. Open Microsoft Teams on your device.\n4. Sign in with your Office 365 username in the format nsid@usask.ca and your password.\n5. Confirm you are signed in and can access Teams."
+      },
+      {
+        "heading": "On iPhone or iPad",
+        "text": "1. Check that you are eligible for a USask Teams account.\n2. Install Microsoft Teams on your mobile device from the App Store.\n3. Open Microsoft Teams on your device.\n4. Sign in with your Office 365 username in the format nsid@usask.ca and your password.\n5. Confirm you are signed in and can access Teams."
+      },
+      {
+        "heading": "On Android",
+        "text": "1. Check that you are eligible for a USask Teams account.\n2. Install Microsoft Teams on your mobile device from Google Play.\n3. Open Microsoft Teams on your device.\n4. Sign in with your Office 365 username in the format nsid@usask.ca and your password.\n5. Confirm you are signed in and can access Teams."
+      }
+    ]
+  },
+  {
+    "page_id": "onedrive-save-files",
+    "title": "OneDrive: Saving files to USask OneDrive",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/Shared/Search/?c=all&s=ONEDRIVE",
+    "topic": "Microsoft 365",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "onedrive",
+      "save",
+      "upload",
+      "files",
+      "save as",
+      "backup",
+      "storage"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Go to login.microsoftonline.com and sign in with your NSID@usask.ca and NSID password.\n2. Open OneDrive to your University of Saskatchewan OneDrive folder.\n3. Click Upload, select Files, choose the files you wanted to upload and click Open.\n4. Confirm the files uploaded successfully to your OneDrive.\n5. You can also save straight from Word, Excel or PowerPoint: select File > Save As > OneDrive - University of Saskatchewan."
+      }
+    ]
+  },
+  {
+    "page_id": "jade-map-drive",
+    "title": "JADE: Map a drive to a departmental JADE share",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/Shared/Search/?c=all&s=JADE",
+    "topic": "File storage",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "jade",
+      "map drive",
+      "network drive",
+      "departmental share",
+      "file server",
+      "dfs"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Find out the name of your department's JADE share.\n   — Map a network drive on your computer to the share on \\\\jade.\n   — If your department uses a Domain DFS root, map the drive to it under \\\\usask.ca instead.\n2. Confirm you can open the share and access your files."
+      }
+    ]
+  },
+  {
+    "page_id": "jade-troubleshoot",
+    "title": "JADE: Can't access a share",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/Shared/Search/?c=all&s=JADE",
+    "topic": "File storage",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "jade",
+      "cannot access",
+      "can't access",
+      "share",
+      "access denied",
+      "not working",
+      "missing share"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Make sure you are signed in to your computer with the account that should have access to the share.\n2. Make sure your computer is connected to the campus network, wired or wireless.\n3. Check whether you can see the share by browsing to \\\\jade.\n4. Try other JADE shares under \\\\jade2, \\\\jade3 and \\\\jade4. If they open, the servers are up.\n   — If you are not a member of the share's permission groups, ask the person who manages the share to request access for you.\n   — If you were only recently added to the share's group, the change may not have taken effect yet.\n   — Log off and back on to your computer so new group membership takes effect.\n5. Confirm you can access the share."
+      },
+      {
+        "heading": "Good to know",
+        "text": "Part of this is done by the service desk. If the steps above don't resolve it, open a ticket with the service desk."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-318",
+    "title": "SPSS: Getting Started",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/318/SPSS-Getting-Started",
+    "topic": "Software",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "spss",
+      "statistics",
+      "ibm spss",
+      "stats software",
+      "remote lab",
+      "course software"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Open PAWS and log in.\n2. Search for Remote Lab and click Software and Computer Labs.\n3. Click Remote Computer Lab.\n4. Click Common Desktop.\n5. Click Connect in Session Settings.\n6. Log in with your NSID and PAWS password.\n7. Open SPSS from the Remote Computer Lab desktop.\n8. Confirm SPSS opened in the remote session."
+      },
+      {
+        "heading": "Good to know",
+        "text": "Students access SPSS through the Remote Computer Lab rather than installing it on a personal device."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-1302",
+    "title": "ArcGIS Pro: How to Install",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/1302/ArcGIS-Pro-How-to-install",
+    "topic": "Software",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "arcgis",
+      "arcgis pro",
+      "gis",
+      "esri",
+      "mapping",
+      "spatialsk",
+      "license"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Confirm your ArcGIS Online account is active using your USask NSID and password.\n2. Sign in to your ArcGIS Online organization account, click your username and select My settings.\n3. Open the Licenses tab and confirm ArcGIS Pro is listed with the Download ArcGIS Pro link.\n4. Click Download ArcGIS Pro, review the language setting and click Download.\n5. Install the Microsoft .NET framework as the required prerequisite.\n6. Run the ArcGIS Pro installer and install with the \"Anyone who uses this machine (all users)\" option to enable license management.\n7. Review and agree to the Educational program license terms.\n8. Launch ArcGIS Pro and select Your ArcGIS organization's URL.\n9. Enter \"spatialsk\", click Continue and select University of Saskatchewan.\n10. Sign in with your NSID and password to authorize the license.\n11. Confirm ArcGIS Pro opened with a valid license."
+      }
+    ]
+  },
+  {
+    "page_id": "class-override",
+    "title": "Class Registration: Request a class override",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/Shared/Search/?c=all&s=CLASS+REGISTRATION",
+    "topic": "Registration",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "registration",
+      "register",
+      "class",
+      "course",
+      "override",
+      "crn",
+      "errors preventing registration",
+      "prerequisite",
+      "class full"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. Attempt registration under Register for Classes, add the class by CRN to the summary and click Submit.\n2. Review the error by hovering over \"Errors Preventing Registration\".\n3. Go to the class overrides and changing audit/credit status page and click Request a class override.\n4. Click Apply for New Override and select Registration Error as the override type.\n5. Select the class, enter your reason for the override and click Submit Request.\n6. Confirm the request appeared on your override dashboard with the status New Request.\n7. The request will be processed by the college or department and you will receive an email with the decision.\n8. If approved, you must return to the registration channel and register for the class yourself, as registration is not automatic."
+      }
+    ]
+  },
+  {
+    "page_id": "kb-248",
+    "title": "Cabinet: Can't See All My Files",
+    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/248/Cabinet-Can-t-See-All-My-Files",
+    "topic": "File storage",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "cabinet",
+      "files missing",
+      "cannot see files",
+      "offline files",
+      "work online",
+      "network share",
+      "h drive"
+    ],
+    "sections": [
+      {
+        "heading": "Steps",
+        "text": "1. This applies to USask managed Windows devices using Offline Files. Cabinet is marked offline when the device can't reach the network share at logon.\n   — If you are off campus, connect to the USask VPN first.\n   — On Windows 11, open Control Panel > Windows Tools first.\n2. Open your Cabinet folder in File Explorer.\n3. Click the Home tab, then Easy Access > Work Online.\n4. Refresh the window and confirm all of your Cabinet files are visible."
+      }
+    ]
+  },
+  {
+    "page_id": "device-basics",
+    "title": "Devices: Basic Hardware Troubleshooting",
+    "url": "",
     "topic": "Devices",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [],
     "sections": [
       {
-        "heading": "First steps on a new laptop",
-        "text": "Connect to the wireless network, sign in to your institutional account in a browser, then install the office suite and the print client from the software portal.\n\nRegister the device with multi-factor authentication before you need it urgently. Doing this while you still have access to your existing method avoids the most common lockout."
+        "heading": "Steps",
+        "text": "1. Confirm the device powers on and is charged.\n2. Reseat cables and try a different port or cable.\n3. Restart the device and retest.\n4. Record the model and symptoms if the problem persists."
       },
       {
-        "heading": "Moving from an old device",
-        "text": "Files stored in the institutional cloud storage appear automatically once you sign in. Files stored only on the old device must be copied across manually before it is wiped.\n\nSaved wireless passwords and mail accounts do not transfer. Expect to set those up again."
+        "heading": "Good to know",
+        "text": "Physical repair of university owned equipment is handled by a technician, not at the desk."
       }
     ]
   },
   {
-    "page_id": "phishing-security",
-    "title": "Recognising phishing and suspicious email",
-    "url": "https://itsecurity.usask.ca/learn-about/avoiding-phishing-incidents.php",
-    "related_urls": [
-      "https://itsecurity.usask.ca/report-an-incident/reportinganincident.php"
+    "page_id": "note-identity-format",
+    "title": "Wi-Fi on ChromeOS and Linux: username format",
+    "url": "",
+    "topic": "Network",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "chromebook",
+      "chromeos",
+      "chrome os",
+      "linux",
+      "ubuntu"
     ],
+    "sections": [
+      {
+        "heading": "",
+        "text": "On ChromeOS and Linux the wireless identity needs the full username with the domain, not the short username alone. This is the most common first attempt failure."
+      }
+    ]
+  },
+  {
+    "page_id": "note-mac-admin-password",
+    "title": "Wi-Fi on a Mac: the administrator password prompt",
+    "url": "",
+    "topic": "Network",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "mac",
+      "macbook",
+      "macos",
+      "os x"
+    ],
+    "sections": [
+      {
+        "heading": "",
+        "text": "On macOS the certificate trust prompt asks for the Mac's local administrator password. On a personally owned Mac that is the password for the Mac itself, and not knowing it stops the connection."
+      }
+    ]
+  },
+  {
+    "page_id": "note-post-reset-sync",
+    "title": "After a password reset: update your saved passwords",
+    "url": "",
+    "topic": "Accounts",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "reset",
+      "changed password",
+      "new password",
+      "password change"
+    ],
+    "sections": [
+      {
+        "heading": "",
+        "text": "After a password reset you must update saved wireless networks, VPN, phone mail sync and any password manager. Synchronisation is not instant, so an immediate failure is usually a saved old password rather than a fault."
+      }
+    ]
+  },
+  {
+    "page_id": "note-mfa-push-not-code",
+    "title": "MFA: approving a sign-in instead of typing a code",
+    "url": "",
     "topic": "Security",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [
+      "code",
+      "text",
+      "sms",
+      "registered device",
+      "no code"
+    ],
     "sections": [
       {
-        "heading": "What to look for",
-        "text": "Messages that create urgency about your account, ask you to confirm a password, or link to a sign-in page from an unfamiliar address should be treated as suspicious. Legitimate messages about your account will not ask you to enter your password by following a link in an email.\n\nJob and scholarship offers that arrive unsolicited and ask for payment or bank details are a recurring pattern targeting students."
-      },
-      {
-        "heading": "What to do",
-        "text": "Do not reply, do not follow links, and do not open attachments. Report the message using the reporting option in your mail client, which sends it for analysis.\n\nIf you have already entered your password on a suspicious page, change it immediately and then contact the service desk. Speed matters more than certainty here."
+        "heading": "",
+        "text": "A message asking you to check your registered device is waiting for an approval tap in the authenticator app, not a typed code. With number matching the number on screen is typed into the app."
       }
     ]
   },
   {
-    "page_id": "service-desk",
-    "title": "Contacting the service desk",
-    "url": "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/21/How-do-I-contact-IT-Support",
-    "related_urls": [
-      "https://teamdynamix.usask.ca/TDClient/33/Portal/KB/Article/111/Location-of-IT-Support-s-In-Person-Desk-on-Campus"
-    ],
-    "topic": "Getting help",
+    "page_id": "note-desktop-vs-web",
+    "title": "Microsoft 365 works in the browser but not the desktop apps",
+    "url": "",
+    "topic": "Microsoft 365",
     "fetched": "",
-    "synthetic": true,
+    "synthetic": false,
+    "keywords": [
+      "desktop",
+      "outlook app",
+      "135011",
+      "web works",
+      "browser works"
+    ],
     "sections": [
       {
-        "heading": "How to open a ticket",
-        "text": "Requests can be submitted through the online support portal, by email, or in person at the service desk. The portal is the fastest route because it captures the information needed to start work without a follow-up exchange.\n\nInclude what you were trying to do, what happened instead, the exact wording of any error message, and which device and browser you were using."
-      },
+        "heading": "",
+        "text": "When the browser version works but the desktop apps fail, the cause is usually device registration rather than your licence. The service desk handles this, so open a ticket."
+      }
+    ]
+  },
+  {
+    "page_id": "note-catalogue-managed-only",
+    "title": "Managed software catalogue: university devices only",
+    "url": "",
+    "topic": "Software",
+    "fetched": "",
+    "synthetic": false,
+    "keywords": [
+      "software center",
+      "software centre",
+      "personal laptop",
+      "own laptop",
+      "catalogue"
+    ],
+    "sections": [
       {
-        "heading": "What the desk cannot do by email",
-        "text": "Anything that grants or restores access requires identity verification, so password resets, multi-factor authentication resets and account unlocks cannot be completed by email alone.\n\nBring photo identification if you attend in person, or expect to verify your identity another way if you contact the desk remotely."
-      },
-      {
-        "heading": "Hours and response times",
-        "text": "The desk operates during published business hours, with reduced hours between terms and on holidays. Tickets submitted outside those hours are queued for the next working day.\n\nUrgent issues affecting teaching or an exam should be flagged as such when the ticket is created."
+        "heading": "",
+        "text": "The managed software catalogue only works on university managed Windows devices and needs the VPN when off campus. It is not an option on a personal laptop."
       }
     ]
   }

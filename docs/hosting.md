@@ -39,10 +39,10 @@ Best fit for a student Flask project. Always on, no cold starts, no card needed.
    ```bash
    git clone https://git.cs.usask.ca/<your-group>/tier-zero.git
    cd tier-zero
-   mkvirtualenv --python=/usr/bin/python3.10 tierzero
+   mkvirtualenv --python=/usr/bin/python3.12 tierzero
    pip install -r requirements.txt
    ```
-3. **Web → Add a new web app → Manual configuration → Python 3.10**
+3. **Web → Add a new web app → Manual configuration → Python 3.12**
 4. Set **Source code** to `/home/<you>/tier-zero`
 5. Set **Virtualenv** to `/home/<you>/.virtualenvs/tierzero`
 6. Edit the WSGI configuration file it gives you; replace the contents with:
@@ -61,8 +61,24 @@ Best fit for a student Flask project. Always on, no cold starts, no card needed.
 To update after a push: Bash console, `git pull`, then hit Reload.
 
 **Free tier limits:** one web app, a CPU-seconds quota, and outbound internet is
-restricted to a whitelist — which matters if you later use the Claude answerer.
-BM25 and extractive answers work fine.
+restricted to a whitelist. BM25 and extractive answers need no network at all, so
+they always work.
+
+**The whitelist and the LLM answerer.** The published whitelist carries a wildcard
+entry for `.googleapis.com`, which should cover Gemini at
+`generativelanguage.googleapis.com`. It is a wildcard rather than a named entry,
+so confirm it before depending on it — one command in a Bash console:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://generativelanguage.googleapis.com/
+```
+
+Any HTTP status back (`404`, `200`, `403`) means the request left the machine and
+the host is reachable. `000`, a hang, or a proxy error means it is blocked. Run
+this **before** wiring up the key, not after.
+
+`api.anthropic.com` is not on the whitelist, so the Claude answerer will not work
+on a free account.
 
 ---
 

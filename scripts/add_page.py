@@ -19,8 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "data" / "sources.json"
 
-TOPICS = ["Housing", "Dining", "Clubs", "Recreation", "Health",
-          "Getting around", "Safety", "Money", "Study", "International"]
+TOPICS = ["Accounts", "Network", "Security", "Email", "Microsoft 365",
+          "Software", "File storage", "Printing", "Registration", "Devices"]
 
 
 def slugify(url: str) -> str:

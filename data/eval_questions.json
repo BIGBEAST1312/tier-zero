@@ -1,59 +1,190 @@
 [
-  {"question": "How do I reset my NSID password?", "expected_page": "password-reset"},
-  {"question": "I forgot my password and can't sign in", "expected_page": "password-reset"},
-  {"question": "What are the password requirements?", "expected_page": "password-reset"},
-  {"question": "My account keeps getting locked", "expected_page": "account-lockout"},
-  {"question": "Why does my account lock after I reset the password?", "expected_page": "account-lockout"},
-  {"question": "How long does a lockout last?", "expected_page": "account-lockout"},
-
-  {"question": "How do I set up multi-factor authentication?", "expected_page": "mfa-setup"},
-  {"question": "I got a new phone, how do I move my authenticator?", "expected_page": "mfa-setup"},
-  {"question": "My MFA codes are being rejected", "expected_page": "mfa-setup"},
-  {"question": "I'm not getting push notifications to approve sign in", "expected_page": "mfa-setup"},
-
-  {"question": "How do I connect to eduroam?", "expected_page": "wifi-eduroam"},
-  {"question": "Campus wifi keeps disconnecting", "expected_page": "wifi-eduroam"},
-  {"question": "Can I use eduroam at another university?", "expected_page": "wifi-eduroam"},
-
-  {"question": "Do I need the VPN to check my email from home?", "expected_page": "vpn-access"},
-  {"question": "How do I install the VPN?", "expected_page": "vpn-access"},
-  {"question": "A library database works on campus but not at home", "expected_page": "vpn-access"},
-
-  {"question": "How do I set up my university email on my phone?", "expected_page": "email-setup"},
-  {"question": "I can receive email but not send any", "expected_page": "email-setup"},
-  {"question": "Can I recover an email I deleted?", "expected_page": "email-setup"},
-
-  {"question": "One of my courses isn't showing up", "expected_page": "lms-access"},
-  {"question": "My assignment upload keeps failing", "expected_page": "lms-access"},
-  {"question": "Course videos won't play for me", "expected_page": "lms-access"},
-
-  {"question": "How do I print from my own laptop?", "expected_page": "printing"},
-  {"question": "I sent a print job but nothing came out", "expected_page": "printing"},
-  {"question": "How do I add print credit?", "expected_page": "printing"},
-
-  {"question": "What software can I get for free as a student?", "expected_page": "software-downloads"},
-  {"question": "Can I keep using the software after I graduate?", "expected_page": "software-downloads"},
-  {"question": "The software installed but won't activate", "expected_page": "software-downloads"},
-
-  {"question": "I just got a new laptop, what should I set up first?", "expected_page": "device-setup"},
-  {"question": "How do I move my files to a new computer?", "expected_page": "device-setup"},
-
-  {"question": "I got a suspicious email asking me to confirm my password", "expected_page": "phishing-security"},
-  {"question": "I think I entered my password on a fake site", "expected_page": "phishing-security"},
-  {"question": "How do I report a phishing message?", "expected_page": "phishing-security"},
-
-  {"question": "How do I open a support ticket?", "expected_page": "service-desk"},
-  {"question": "What information should I include when I report a problem?", "expected_page": "service-desk"},
-  {"question": "What are the service desk hours?", "expected_page": "service-desk"},
-
-  {"question": "Can you reset my password for me?", "expected_page": null},
-  {"question": "Unlock my account right now", "expected_page": null},
-  {"question": "What is my current password?", "expected_page": null},
-  {"question": "My laptop screen is cracked, can you fix it?", "expected_page": null},
-  {"question": "How do I appeal a final grade?", "expected_page": null},
-  {"question": "When is the tuition payment deadline?", "expected_page": null},
-  {"question": "Has the university had a data breach?", "expected_page": null},
-  {"question": "Who is the CIO of the university?", "expected_page": null},
-  {"question": "Can you give me someone else's email address?", "expected_page": null},
-  {"question": "What is the capital of Australia?", "expected_page": null}
+  {
+    "question": "I forgot my NSID password",
+    "expected_page": "kb-20"
+  },
+  {
+    "question": "How do I reset my password?",
+    "expected_page": "kb-20"
+  },
+  {
+    "question": "My new password isn't working on my phone after I reset it",
+    "expected_page": "note-post-reset-sync"
+  },
+  {
+    "question": "How do I connect to uofs-secure?",
+    "expected_page": "kb-433"
+  },
+  {
+    "question": "How do I connect my Android phone to campus wifi?",
+    "expected_page": "kb-433"
+  },
+  {
+    "question": "What EAP method do I use for wifi on Android?",
+    "expected_page": "kb-433"
+  },
+  {
+    "question": "Wifi won't accept my username on my Chromebook",
+    "expected_page": "note-identity-format"
+  },
+  {
+    "question": "My Mac asks for an administrator password when joining wifi",
+    "expected_page": "note-mac-admin-password"
+  },
+  {
+    "question": "How do I set up multi-factor authentication?",
+    "expected_page": "kb-230"
+  },
+  {
+    "question": "How do I link the Authenticator app with PAWS?",
+    "expected_page": "kb-230"
+  },
+  {
+    "question": "MFA says check my registered device but I never got a code",
+    "expected_page": "note-mfa-push-not-code"
+  },
+  {
+    "question": "How do I install Microsoft Office on my laptop?",
+    "expected_page": "kb-181"
+  },
+  {
+    "question": "Can I get Microsoft 365 on my personal computer?",
+    "expected_page": "kb-181"
+  },
+  {
+    "question": "Outlook works in the browser but not the desktop app",
+    "expected_page": "note-desktop-vs-web"
+  },
+  {
+    "question": "My print job was denied",
+    "expected_page": "kb-3420"
+  },
+  {
+    "question": "Why is my printing delayed?",
+    "expected_page": "kb-3420"
+  },
+  {
+    "question": "How do I install software from the software catalogue?",
+    "expected_page": "kb-3421"
+  },
+  {
+    "question": "Can I use the software catalogue on my own laptop?",
+    "expected_page": "note-catalogue-managed-only"
+  },
+  {
+    "question": "How do I set up my USask email in Outlook on Windows?",
+    "expected_page": "kb-172"
+  },
+  {
+    "question": "How do I add my USask email to my iPhone?",
+    "expected_page": "kb-218"
+  },
+  {
+    "question": "How do I set up USask email in the Gmail app on Android?",
+    "expected_page": "kb-146"
+  },
+  {
+    "question": "How do I use the remote computer lab?",
+    "expected_page": "kb-116"
+  },
+  {
+    "question": "How do I connect to the VPN from home?",
+    "expected_page": "kb-185"
+  },
+  {
+    "question": "Should I use the VPN while I'm on campus?",
+    "expected_page": "kb-185"
+  },
+  {
+    "question": "How do I activate my Zoom account?",
+    "expected_page": "kb-204"
+  },
+  {
+    "question": "Zoom says something went wrong while signing in with SSO",
+    "expected_page": "kb-204"
+  },
+  {
+    "question": "Can I create a custom workflow in SharePoint?",
+    "expected_page": "kb-893"
+  },
+  {
+    "question": "How do I install Microsoft Teams?",
+    "expected_page": "microsoft-teams-at-usask"
+  },
+  {
+    "question": "How do I save files to OneDrive?",
+    "expected_page": "onedrive-save-files"
+  },
+  {
+    "question": "How do I map a drive to my department's JADE share?",
+    "expected_page": "jade-map-drive"
+  },
+  {
+    "question": "I can't access my department's JADE share",
+    "expected_page": "jade-troubleshoot"
+  },
+  {
+    "question": "How do I get SPSS?",
+    "expected_page": "kb-318"
+  },
+  {
+    "question": "How do I install ArcGIS Pro?",
+    "expected_page": "kb-1302"
+  },
+  {
+    "question": "How do I request a class override?",
+    "expected_page": "class-override"
+  },
+  {
+    "question": "Registration says errors preventing registration",
+    "expected_page": "class-override"
+  },
+  {
+    "question": "I can't see all my files in Cabinet",
+    "expected_page": "kb-248"
+  },
+  {
+    "question": "My monitor won't turn on",
+    "expected_page": "device-basics"
+  },
+  {
+    "question": "Can you reset my password for me?",
+    "expected_page": null
+  },
+  {
+    "question": "Unlock my account right now",
+    "expected_page": null
+  },
+  {
+    "question": "What is my current password?",
+    "expected_page": null
+  },
+  {
+    "question": "How do I appeal a final grade?",
+    "expected_page": null
+  },
+  {
+    "question": "When is the tuition payment deadline?",
+    "expected_page": null
+  },
+  {
+    "question": "Has the university had a data breach?",
+    "expected_page": null
+  },
+  {
+    "question": "Who is the CIO of the university?",
+    "expected_page": null
+  },
+  {
+    "question": "Can you give me someone else's email address?",
+    "expected_page": null
+  },
+  {
+    "question": "Where can I park on campus?",
+    "expected_page": null
+  },
+  {
+    "question": "What is the capital of Australia?",
+    "expected_page": null
+  }
 ]

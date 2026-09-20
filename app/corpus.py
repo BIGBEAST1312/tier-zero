@@ -25,6 +25,16 @@ class Passage:
     text: str
     topic: str = ""
     synthetic: bool = False
+    keywords: str = ""
+
+    @property
+    def search_text(self) -> str:
+        """What the retriever indexes. The title, section heading and the
+        article's keyword list are searched along with the text, so a student who
+        says "wifi" finds the article titled "Wireless: Connect to uofs-secure".
+        Only `text` is ever shown to the user or used as an answer."""
+        return " ".join(x for x in (self.page_title, self.section, self.keywords,
+                                     self.text) if x)
 
     def citation(self) -> dict:
         label = f"{self.page_title} — {self.section}" if self.section else self.page_title
@@ -40,6 +50,7 @@ class SourcePage:
     fetched: str = ""
     synthetic: bool = False
     sections: list = field(default_factory=list)
+    keywords: list = field(default_factory=list)
 
 
 @dataclass
@@ -82,7 +93,11 @@ class Corpus:
 
 def split_paragraphs(text: str) -> list:
     parts = re.split(r"\n\s*\n", text.strip())
-    return [re.sub(r"\s+", " ", p).strip() for p in parts if p.strip()]
+    # Keep single line breaks: a numbered procedure is one paragraph with a step
+    # per line, and flattening it runs the steps together.
+    return ["\n".join(re.sub(r"[ \t]+", " ", line).strip()
+                      for line in p.strip().splitlines() if line.strip())
+            for p in parts if p.strip()]
 
 
 def chunk_section(text: str, target_chars: int = 700, overlap_chars: int = 120) -> list:
@@ -95,9 +110,9 @@ def chunk_section(text: str, target_chars: int = 700, overlap_chars: int = 120) 
     for p in paras:
         if cur and len(cur) + len(p) + 1 > target_chars:
             chunks.append(cur)
-            cur = (cur[-overlap_chars:] + " " + p).strip() if overlap_chars else p
+            cur = (cur[-overlap_chars:] + "\n\n" + p).strip() if overlap_chars else p
         else:
-            cur = f"{cur} {p}".strip()
+            cur = f"{cur}\n\n{p}".strip()
     if cur:
         chunks.append(cur)
     return chunks
@@ -112,6 +127,7 @@ def load_corpus(path, target_chars: int = 700, overlap_chars: int = 120) -> Corp
             topic=doc.get("topic", "Other"), fetched=doc.get("fetched", ""),
             synthetic=bool(doc.get("synthetic", False)),
             sections=doc.get("sections", []),
+            keywords=doc.get("keywords", []),
         )
         corpus.pages.append(page)
         for s_i, section in enumerate(page.sections):
@@ -121,5 +137,6 @@ def load_corpus(path, target_chars: int = 700, overlap_chars: int = 120) -> Corp
                     page_id=page.page_id, page_title=page.title, url=page.url,
                     section=section.get("heading", ""), text=text,
                     topic=page.topic, synthetic=page.synthetic,
+                    keywords=" ".join(page.keywords),
                 ))
     return corpus

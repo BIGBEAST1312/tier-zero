@@ -22,7 +22,7 @@ hand off rather than guess.
 ```bash
 pip install -r requirements.txt
 python run.py                 # http://127.0.0.1:5000
-python tests/test_app.py      # 18 tests
+python tests/test_app.py      # 28 tests
 python scripts/evaluate.py    # metrics → /maintainer/quality
 ```
 
@@ -47,14 +47,16 @@ app/
 templates/ static/   the interface, mobile-first
 site/                3D scroll-driven landing page (no CDN; three.js vendored)
 scripts/
+  import_kb.py    build sources.json from data/kb_articles.json
   add_page.py     add a KB article by pasting its text
   scrape.py       collect articles from the public KB
   ingest.py       merge a scraped batch
   evaluate.py     recall@k, MRR, escalation threshold sweep
 tests/test_app.py
 data/
-  sources.json        the knowledge base — PLACEHOLDER CONTENT, see below
-  eval_questions.json 46 labelled questions, 10 of them out of scope
+  kb_articles.json    the team's knowledge-base articles — edit this one
+  sources.json        generated from it by scripts/import_kb.py — never hand-edit
+  eval_questions.json 47 labelled questions, 10 of them out of scope
 ```
 
 ## What it will not do
@@ -66,39 +68,58 @@ Stated plainly because a service owner will ask first:
 - It only reads public knowledge base articles — never tickets, never account data
 - Anything requiring action or verification is escalated to the service desk
 
-## The data in here is fake
+## The knowledge base
 
-`data/sources.json` is **placeholder content written for development**, not the
-real USask IT knowledge base. Every article is flagged `"synthetic": true` and the
-interface shows a sample-data banner because of it. Replace it before the numbers
-mean anything:
+`data/kb_articles.json` holds the team's articles and is the file to edit. The
+site reads `data/sources.json`, which is generated from it:
 
 ```bash
-python scripts/add_page.py                        # paste an article
-python scripts/scrape.py --seeds data/seeds/accounts.txt --topic Accounts --out data/new.json
-python scripts/ingest.py data/new.json
+python scripts/import_kb.py      # rebuild sources.json after editing kb_articles.json
+python scripts/evaluate.py       # re-measure
+python tests/test_app.py
 ```
 
-Then rewrite `data/eval_questions.json` against the real articles.
+The import rewrites steps from desk-log voice ("Confirmed the client's NSID was
+active") into instructions a student can follow ("Confirm your NSID is active"),
+leaves out staff-only steps done in IAM, and turns each platform note into its own
+short article. It prints what it skipped or trimmed.
+
+Articles flagged `"synthetic": true` in `kb_articles.json` keep that flag, and the
+site shows a SAMPLE DATA banner while any are present. Set the flag to `false`
+only once an article has been checked against the live USask knowledge base.
 
 ## Measurements
 
-From `python scripts/evaluate.py` on the placeholder corpus with BM25:
+From `python scripts/evaluate.py` with BM25:
 
 | Metric | Value |
 |---|---|
-| recall@5 | 94.4% |
-| MRR | 0.836 |
-| Escalation accuracy | 87.0% at the chosen cut-off |
+| recall@5 | 97.3% |
+| MRR | 0.946 |
+| Escalation accuracy | 93.6% at the chosen cut-off |
 
-### Why the cut-off is 2.0
+Measured on the team's real knowledge-base articles (`data/kb_articles.json`,
+imported by `scripts/import_kb.py`) with 47 labelled questions: 37 the articles
+should answer and 10 they should escalate.
 
-Cut-offs of 0.5 through 2.0 all score 87.0%, but they trade differently. At 0.5 the
-product answers every real question and wrongly answers six it should have
-escalated; at 2.0 it wrongly answers five and declines one it could have handled. A
-wrong instruction about an account can lock someone out — which turns a
-self-service question into a desk visit, the opposite of what tier zero is for. So
-we take the higher cut-off.
+### Why the cut-off is 4.0
+
+Out-of-scope questions score 3.58 or lower, and answerable ones 4.92 or higher —
+with one exception that decides everything:
+
+| Question | Score |
+|---|---|
+| "How do I reset my password?" | 4.28 |
+| "Can you reset my password for me?" | 4.28 |
+
+Identical. At 4.5 both are declined, so the product refuses the most common
+tier-zero question there is. At 4.0 both are answered, and the "for me" request
+gets the self-service reset steps, which is a reasonable reply to it. The two
+cut-offs tie on accuracy (93.6%); the sweep's automatic tie-break prefers 4.5 for
+its one fewer wrong answer, and we override it on purpose. `scripts/evaluate.py`
+prints both the sweep's pick and the shipped value so they can't drift apart.
+
+No threshold can separate those two questions, which is the first limitation below.
 
 ## Known limitations
 
@@ -110,9 +131,9 @@ we take the higher cut-off.
   pipeline does not yet enforce it, and the extractive answerer cannot.
   `tests/test_app.py::test_action_requests_are_escalated_not_answered` asserts the
   gap so it cannot change unnoticed.
-- **Near-miss questions from other domains still leak.** "When is the tuition
-  payment deadline" clears the score gate because "payment" appears in the phishing
-  article. Same root cause as above.
+- **Near-miss requests still leak.** "Can you give me someone else's email
+  address?" clears the score gate because it shares its words with the email setup
+  articles. Same root cause as above.
 - **BM25 misses on vocabulary mismatch.** A question phrased entirely differently
   from the article wording scores low. That is what `--retriever hybrid` is for.
 - **No conversation memory.** Each question is independent.

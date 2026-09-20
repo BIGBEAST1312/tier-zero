@@ -1,5 +1,19 @@
 __pycache__/
 *.pyc
 .venv/
+venv/
+
+# Secrets — never commit. .env.example is the committed template.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Runtime data
 data/feedback.json
 data/eval_results.json
+
+.DS_Store
+.idea/
+.vscode/

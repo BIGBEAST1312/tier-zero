@@ -76,33 +76,25 @@ def build_context(passages: list) -> str:
 
 
 class ExtractiveAnswerer:
-    """Picks the sentences overlapping most with the question. No generation, so
-    it cannot fabricate — its ceiling is retrieval quality."""
+    """Returns the best-matching section of one article, word for word.
+
+    No generation, so it cannot fabricate — its ceiling is retrieval quality.
+
+    It used to pick the individual sentences that overlapped most with the
+    question, from any of the retrieved passages. On a knowledge base made of
+    numbered procedures that was the wrong design: it pulled step 1 from one
+    article and step 4 from another, out of order, and read like one answer when
+    it was three. A procedure is only useful whole and in order, so this returns
+    the top-ranked passage intact. Mixing articles is the LLM answerer's job,
+    because it can say which article each part came from.
+    """
 
     name = "extractive"
 
     def answer(self, question: str, passages: list, max_sentences: int = 3) -> str:
-        from .retrieval import tokenize
-        q = set(tokenize(question))
-        scored = []
-        for p in passages:
-            for sent in re.split(r"(?<=[.!?])\s+", p.text):
-                if len(sent.split()) < 4:
-                    continue
-                overlap = len(q & set(tokenize(sent)))
-                if overlap:
-                    scored.append((overlap, sent.strip()))
-        if not scored:
-            return passages[0].text[:400] if passages else ""
-        scored.sort(key=lambda x: -x[0])
-        picked, seen = [], set()
-        for _, sent in scored:
-            if sent not in seen:
-                picked.append(sent)
-                seen.add(sent)
-            if len(picked) >= max_sentences:
-                break
-        return " ".join(picked)
+        if not passages:
+            return ""
+        return passages[0].text
 
 
 class ClaudeAnswerer:

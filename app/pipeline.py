@@ -12,6 +12,7 @@ answerable and unanswerable questions instead of leaving it to taste.
 """
 
 import json
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,14 +41,14 @@ class Retrieved:
 class Bot:
     def __init__(self, corpus: Corpus, retriever: str = "bm25",
                  answerer: str = "extractive", top_k: int = 4,
-                 refuse_below: float = 2.0):
+                 refuse_below: float = 4.0):
         self.corpus = corpus
         self.retriever_name = retriever
         self.top_k = top_k
         self.refuse_below = refuse_below
         self.answerer = get_answerer(answerer) if isinstance(answerer, str) else answerer
 
-        texts = [p.text for p in corpus.passages]
+        texts = [p.search_text for p in corpus.passages]
         self.bm25 = self.dense = None
         if retriever in ("bm25", "hybrid"):
             self.bm25 = BM25().fit(texts)
@@ -74,17 +75,25 @@ class Bot:
         return Retrieved([self.corpus.passages[i] for i, _ in hits], [s for _, s in hits])
 
     def should_refuse(self, r: Retrieved) -> bool:
-        """Default cut-off is 2.5, chosen from the sweep in scripts/evaluate.py.
+        """Default cut-off is 4.0, chosen from the sweep in scripts/evaluate.py
+        on the real knowledge-base articles — and then by judgement.
 
-        Cut-offs of 0.5 and 2.5 score the same overall accuracy on our question
-        set (95.2%), but they trade differently: 0.5 answers one more real
-        question and wrongly answers two out-of-scope ones; 2.5 wrongly answers
-        one. We weight a wrong answer as worse than a refusal — a student acts
-        on a wrong deadline — so we take 2.5.
+        On our 47 labelled questions, 4.0 and 4.5 tie on accuracy (93.6%). The
+        sweep's tie-break prefers 4.5 because it wrongly answers one fewer
+        out-of-scope question. We ship 4.0, because of which questions they are:
 
-        Normalising the score by query length was tried as a second signal and
-        did not separate the cases any better (same 95.2% ceiling, degrading
-        faster). The remaining leak is documented in tests/test_app.py.
+            "How do I reset my password?"         scores 4.28
+            "Can you reset my password for me?"   scores 4.28
+
+        Identical scores. 4.5 declines both — refusing the single most common
+        tier-zero question. 4.0 answers both, and the "for me" request gets the
+        self-service reset steps, which is a reasonable reply to it. No cut-off
+        can separate the two, because scoring cannot tell asking how to do
+        something from asking us to do it. That is the known limitation in
+        tests/test_app.py, shown here with real numbers.
+
+        Everything else sits in a clear gap: other out-of-scope questions score
+        3.58 or lower, other answerable ones 4.92 or higher.
         """
         return not r.passages or r.top_score < self.refuse_below
 
@@ -97,15 +106,54 @@ class Bot:
         if self.should_refuse(r):
             return Answer(REFUSAL, [], refused=True, top_score=r.top_score,
                           engine=self.answerer.name, question=question)
+        passages = self.focus(question, r.passages)
         try:
-            text = self.answerer.answer(question, r.passages)
+            text = self.answerer.answer(question, passages)
         except Exception as e:
             # Never fail into a fabricated answer. If generation breaks, fall
             # back to extraction, which cannot invent anything.
-            text = (f"[{type(e).__name__}] Falling back to extractive answering.\n\n"
-                    + ExtractiveAnswerer().answer(question, r.passages))
-        return Answer(text, r.passages, refused=False, top_score=r.top_score,
+            #
+            # The exception message is the whole diagnostic — it carries the
+            # provider's status code and response body. Printing only the class
+            # name leaves you with a bare "[RuntimeError]" and nothing to act on,
+            # so log the full text server-side and show it in the fallback notice.
+            detail = str(e).strip() or "no detail"
+            print(f"[answerer:{self.answerer.name}] {type(e).__name__}: {detail}",
+                  file=sys.stderr, flush=True)
+            text = (f"[{type(e).__name__}] {detail}\n\n"
+                    f"Falling back to extractive answering.\n\n"
+                    + ExtractiveAnswerer().answer(question, passages))
+        return Answer(text, passages, refused=False, top_score=r.top_score,
                       engine=self.answerer.name, question=question)
+
+    # Sections that are side notes rather than the procedure itself.
+    NOTE_SECTIONS = ("Good to know", "Depending on your situation")
+
+    def focus(self, question: str, passages: list) -> list:
+        """Put the best section of the best article first.
+
+        Retrieval is good at choosing the article but poor at choosing the
+        section within it: BM25 favours short passages, so a one-line "Good to
+        know" note outranks the seven numbered steps the student needs. So keep
+        retrieval's choice of article, then pick that article's section with the
+        most words in common with the question — preferring the steps over side
+        notes on a tie. The other retrieved passages follow, for citations and
+        for the LLM answerer's context.
+        """
+        if not passages:
+            return passages
+        from .retrieval import tokenize
+        page = passages[0].page_id
+        q = set(tokenize(question))
+        same_page = [p for p in self.corpus.passages if p.page_id == page]
+
+        def rank(p):
+            overlap = len(q & set(tokenize(f"{p.section} {p.text}")))
+            is_note = p.section in self.NOTE_SECTIONS
+            return (-overlap, is_note)
+
+        best = min(same_page, key=rank)
+        return [best] + [p for p in passages if p.passage_id != best.passage_id]
 
     # --- suggestions for the browse view (Epic 5) ---
     def suggestions(self, topic: str = None, n: int = 6) -> list:
@@ -114,16 +162,18 @@ class Bot:
 
 
 SUGGESTED = [
-    {"q": "How do I reset my NSID password?", "topic": "Accounts"},
-    {"q": "My account keeps getting locked", "topic": "Accounts"},
-    {"q": "How do I connect to eduroam?", "topic": "Network"},
-    {"q": "I got a new phone \u2014 how do I move my authenticator?", "topic": "Security"},
-    {"q": "Do I need the VPN to check email from home?", "topic": "Network"},
-    {"q": "How do I set up email on my phone?", "topic": "Email"},
-    {"q": "My assignment upload keeps failing", "topic": "Learning tools"},
-    {"q": "I sent a print job but nothing came out", "topic": "Printing"},
-    {"q": "What software can I get for free as a student?", "topic": "Software"},
-    {"q": "I got a suspicious email about my password", "topic": "Security"},
+    {"q": "I forgot my NSID password", "topic": "Accounts"},
+    {"q": "My new password isn't working on my phone", "topic": "Accounts"},
+    {"q": "How do I connect to uofs-secure wifi?", "topic": "Network"},
+    {"q": "How do I use the VPN from home?", "topic": "Network"},
+    {"q": "How do I set up multi-factor authentication?", "topic": "Security"},
+    {"q": "How do I add my USask email to my iPhone?", "topic": "Email"},
+    {"q": "How do I install Microsoft Office on my laptop?", "topic": "Microsoft 365"},
+    {"q": "How do I activate my Zoom account?", "topic": "Software"},
+    {"q": "How do I get SPSS?", "topic": "Software"},
+    {"q": "My print job was denied", "topic": "Printing"},
+    {"q": "I can't see all my files in Cabinet", "topic": "File storage"},
+    {"q": "How do I request a class override?", "topic": "Registration"},
 ]
 
 

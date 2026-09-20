@@ -1,19 +1,54 @@
 # Render.com blueprint. Push this with the repo and Render picks it up.
+#
+# Secrets are NEVER written in this file. generateValue makes Render invent a
+# strong value and store it; sync:false makes Render prompt you for it in the
+# dashboard on first deploy. Either way nothing secret is committed.
 services:
   - type: web
-    name: jugaad-gpt
+    name: tier-zero
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
         value: "3.12"
+
+      # Retrieval and escalation
       - key: TZ_RETRIEVER
         value: bm25
+      - key: TZ_THRESHOLD
+        value: "4.0"
+
+      # Session security. Both are required in production: without TZ_SECRET_KEY
+      # the session cookie is not stable across the two workers or across restarts,
+      # so the maintainer login silently stops working.
       - key: TZ_MAINTAINER_PASSWORD
         generateValue: true
       - key: TZ_SECRET_KEY
         generateValue: true
       - key: TZ_HTTPS
         value: "1"
+
+      # Rate limits on the public ask endpoint. Per worker and in memory, so with
+      # 2 workers the effective ceiling is roughly double these numbers.
+      - key: TZ_ASK_PER_MINUTE
+        value: "12"
+      - key: TZ_ASK_PER_HOUR
+        value: "120"
+
+      # Answerer. 'extractive' needs no key, no network and costs nothing — leave
+      # it here until the LLM route is confirmed working on the host.
+      #
+      # To switch to Gemini: set TZ_ANSWERER to 'local' and fill the three values
+      # below in the Render dashboard. TZ_LLM_API_KEY is sync:false, so Render asks
+      # you for it and it never enters the repo.
+      - key: TZ_ANSWERER
+        value: extractive
+      - key: TZ_LLM_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: TZ_LLM_MODEL
+        value: gemini-2.5-flash
+      - key: TZ_LLM_API_KEY
+        sync: false

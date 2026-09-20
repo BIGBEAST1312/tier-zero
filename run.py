@@ -20,7 +20,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--retriever", default="bm25", choices=["bm25", "dense", "hybrid"])
     ap.add_argument("--answerer", default="extractive", choices=["extractive", "claude", "local"])
-    ap.add_argument("--threshold", type=float, default=2.0,
+    ap.add_argument("--threshold", type=float, default=4.0,
                     help="refuse to answer below this retrieval score")
     ap.add_argument("--password", default=None,
                     help="lock the service-owner views behind this password")

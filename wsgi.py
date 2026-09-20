@@ -5,7 +5,7 @@ environment variables so the same image runs locally and on a host.
 
     TZ_RETRIEVER   bm25 | dense | hybrid        (default bm25)
     TZ_ANSWERER    extractive | claude          (default extractive)
-    TZ_THRESHOLD   refusal cut-off              (default 2.5)
+    TZ_THRESHOLD   refusal cut-off              (default 4.0)
     TZ_MAINTAINER_PASSWORD  if set, /maintainer requires a sign-in
     TZ_SECRET_KEY           signs the session cookie; required in production
     TZ_HTTPS                set to 1 so the session cookie is HTTPS-only
@@ -23,5 +23,5 @@ from app.server import create_app
 app = create_app(
     retriever=os.environ.get("TZ_RETRIEVER", "bm25"),
     answerer=os.environ.get("TZ_ANSWERER", "extractive"),
-    refuse_below=float(os.environ.get("TZ_THRESHOLD", "2.0")),
+    refuse_below=float(os.environ.get("TZ_THRESHOLD", "4.0")),
 )

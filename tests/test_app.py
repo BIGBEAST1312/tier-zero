@@ -92,13 +92,13 @@ def test_answer_carries_citations():
     a = bot.ask("How do I reset my NSID password?")
     assert not a.refused
     assert a.citations(), "an answer must carry sources"
-    assert "password-reset" in [p.page_id for p in a.passages]
+    assert "kb-20" in [p.page_id for p in a.passages]
 
 
 def test_answer_text_comes_only_from_retrieved_passages():
     """The property that makes the extractive answerer hallucination-proof."""
     bot = Bot.from_path(SOURCES)
-    a = bot.ask("How do I connect to eduroam?")
+    a = bot.ask("How do I connect to uofs-secure wifi?")
     haystack = " ".join(p.text for p in a.passages)
     for sentence in a.text.split(". "):
         s = sentence.strip().rstrip(".")
@@ -107,7 +107,7 @@ def test_answer_text_comes_only_from_retrieved_passages():
 
 
 def test_refuses_clearly_out_of_domain_questions():
-    bot = Bot.from_path(SOURCES, refuse_below=2.0)
+    bot = Bot.from_path(SOURCES)
     for q in ["What is the capital of Australia?",
               "Who is the CIO of the university?",
               "Has the university had a data breach?"]:
@@ -116,7 +116,7 @@ def test_refuses_clearly_out_of_domain_questions():
 
 def test_refusal_carries_no_citations():
     """A refusal must not cite anything — citations imply an answer."""
-    bot = Bot.from_path(SOURCES, refuse_below=2.0)
+    bot = Bot.from_path(SOURCES)
     a = bot.ask("What is the capital of Australia?")
     assert a.refused and a.citations() == []
 
@@ -130,13 +130,10 @@ def test_action_requests_are_escalated_not_answered():
     so this is the case the ClaudeAnswerer system prompt has to catch. The
     extractive answerer cannot, and that is worth knowing rather than hiding.
     """
-    bot = Bot.from_path(SOURCES, refuse_below=2.5)
+    bot = Bot.from_path(SOURCES)
     answered = [q for q in ["Can you reset my password for me?",
                             "Unlock my account right now",
-                            # Near-miss from another domain: "payment" appears in
-                            # the phishing article, which is enough to clear the
-                            # score gate even though the question is not ours.
-                            "When is the tuition payment deadline?"]
+                            "Can you give me someone else's email address?"]
                 if not bot.ask(q).refused]
     assert answered, ("retrieval-only escalation improved \u2014 update this test "
                       "to assert the new behaviour")
@@ -236,7 +233,7 @@ def test_public_pages_stay_open_when_maintainer_is_locked():
     try:
         for path in ["/", "/browse", "/healthz"]:
             assert c.get(path).status_code == 200, path
-        r = c.post("/api/ask", json={"question": "how do I connect to eduroam"})
+        r = c.post("/api/ask", json={"question": "how do I connect to uofs-secure wifi"})
         assert r.status_code == 200 and r.get_json()["citations"]
     finally:
         _unset_password()
@@ -265,7 +262,7 @@ def test_every_page_renders():
 
 def test_ask_endpoint_returns_citations():
     client = create_app().test_client()
-    r = client.post("/api/ask", json={"question": "how do I connect to eduroam"})
+    r = client.post("/api/ask", json={"question": "how do I connect to uofs-secure wifi"})
     data = r.get_json()
     assert r.status_code == 200
     assert data["refused"] is False
@@ -285,7 +282,7 @@ def test_ask_endpoint_is_rate_limited():
     os.environ["TZ_ASK_PER_MINUTE"] = "3"
     try:
         c = create_app().test_client()
-        codes = [c.post("/api/ask", json={"question": "eduroam"}).status_code
+        codes = [c.post("/api/ask", json={"question": "uofs-secure wifi"}).status_code
                  for _ in range(5)]
         assert 429 in codes, "repeated questions should be throttled"
         assert codes[0] == 200, "the first few must still work"

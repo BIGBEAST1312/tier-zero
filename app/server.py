@@ -30,7 +30,7 @@ DATA = ROOT / "data"
 
 
 def create_app(retriever: str = "bm25", answerer: str = "extractive",
-               refuse_below: float = 2.0) -> Flask:
+               refuse_below: float = 4.0) -> Flask:
     app = Flask(__name__,
                 template_folder=str(ROOT / "templates"),
                 static_folder=str(ROOT / "static"))
