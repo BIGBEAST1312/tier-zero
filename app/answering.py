@@ -181,11 +181,16 @@ class OpenAICompatAnswerer:
     name = "openai-compat"
 
     def __init__(self, base_url: str = None, model: str = None, api_key: str = None,
-                 max_tokens: int = 400, timeout: int = 30):
+                 max_tokens: int = None, timeout: int = 30):
         self.base_url = (base_url or os.environ.get("TZ_LLM_BASE_URL", "")).rstrip("/")
         self.model = model or os.environ.get("TZ_LLM_MODEL", "")
         self.api_key = api_key if api_key is not None else os.environ.get("TZ_LLM_API_KEY", "")
-        self.max_tokens = max_tokens
+        # Newer models (Gemini 2.5 onward) reason before they answer, and on the
+        # OpenAI-compatible endpoint that reasoning counts against max_tokens.
+        # 400 was plenty for a three-sentence answer from an older model; with
+        # thinking included it cut answers off mid-sentence. The visible answer
+        # is still short — this is headroom, not a longer reply.
+        self.max_tokens = max_tokens or int(os.environ.get("TZ_LLM_MAX_TOKENS", "2048"))
         self.timeout = timeout
 
     def answer(self, question: str, passages: list) -> str:
@@ -230,9 +235,19 @@ class OpenAICompatAnswerer:
                                f"{resp.text[:200]}")
         data = resp.json()
         try:
-            return data["choices"][0]["message"]["content"].strip()
-        except (KeyError, IndexError) as e:
+            choice = data["choices"][0]
+            content = (choice["message"].get("content") or "").strip()
+        except (KeyError, IndexError, AttributeError) as e:
             raise RuntimeError(f"unexpected response shape: {str(data)[:200]}") from e
+        # A cut-off answer is worse than no answer: half an instruction reads as
+        # a whole one. Treat it as a failure so the pipeline shows the article
+        # section instead.
+        if choice.get("finish_reason") == "length":
+            raise RuntimeError(f"{self.model} ran out of tokens before finishing "
+                               f"(max_tokens={self.max_tokens}); raise TZ_LLM_MAX_TOKENS")
+        if not content:
+            raise RuntimeError(f"{self.model} returned an empty answer")
+        return content
 
 
 def get_answerer(name: str):

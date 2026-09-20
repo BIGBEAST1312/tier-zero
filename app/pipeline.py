@@ -12,6 +12,7 @@ answerable and unanswerable questions instead of leaving it to taste.
 """
 
 import json
+import re
 import sys
 import time
 from dataclasses import dataclass
@@ -126,11 +127,20 @@ class Bot:
                     "the matching section of the article.\n\n"
                     + ExtractiveAnswerer().answer(question, passages))
             engine = "extractive (fallback)"
-        # An extractive answer shows one section, so it cites that section only.
-        # Listing every retrieved passage would put Wi-Fi articles under a
-        # password answer. The LLM answer draws on all of them and numbers them.
+        # Cite what the answer actually used. An extractive answer shows one
+        # section, so it cites that one. An LLM answer marks its sources as [1],
+        # [2]... against the numbered passages it was given, so cite exactly
+        # those — listing every retrieved passage put Wi-Fi articles under a
+        # password answer.
         if engine.startswith("extractive"):
             passages = passages[:1]
+        else:
+            used = []
+            for n in re.findall(r"\[(\d+)\]", text):
+                i = int(n) - 1
+                if 0 <= i < len(passages) and passages[i] not in used:
+                    used.append(passages[i])
+            passages = used or passages[:1]
         return Answer(text, passages, refused=False, top_score=r.top_score,
                       engine=engine, question=question)
 

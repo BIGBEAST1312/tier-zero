@@ -156,6 +156,40 @@ def test_llm_failure_falls_back_cleanly():
     assert [c["page_id"] for c in a.citations()] == ["kb-20"]
 
 
+def test_llm_answer_cites_only_the_sources_it_used():
+    """Epic 2 — an LLM answer marks sources as [n]; only those are cited."""
+    class Fake:
+        name = "openai-compat"
+        def answer(self, question, passages):
+            return "Follow the recovery steps [1]."
+    bot = Bot.from_path(SOURCES, answerer=Fake())
+    a = bot.ask("I forgot my NSID password")
+    assert [c["page_id"] for c in a.citations()] == ["kb-20"]
+
+
+def test_cut_off_llm_answer_is_not_shown():
+    """Thinking models can spend the token budget before finishing. Half an
+    instruction must never reach a student; the article section is shown."""
+    import requests
+    from app.answering import OpenAICompatAnswerer
+
+    class Resp:
+        status_code = 200
+        def json(self):
+            return {"choices": [{"message": {"content": "To reset a forgotten password, go to the"},
+                                 "finish_reason": "length"}]}
+    real_post = requests.post
+    requests.post = lambda *a, **k: Resp()
+    try:
+        llm = OpenAICompatAnswerer(base_url="http://x.invalid/v1", model="m", api_key="k")
+        a = Bot.from_path(SOURCES, answerer=llm).ask("I forgot my NSID password")
+    finally:
+        requests.post = real_post
+    assert "go to the" not in a.text.split("\n")[0]
+    assert a.engine == "extractive (fallback)"
+    assert "I forgot my password" in a.text
+
+
 # ------------------------------------------------------------- Epic 2: reports
 def test_feedback_round_trip(tmp_path=None):
     import tempfile
